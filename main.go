@@ -29,11 +29,24 @@ func hello(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 	io.WriteString(w, `<!DOCTYPE html>
-	 <meta http-equiv="refresh" content="5; URL=/">
+	 <!meta http-equiv="refresh" content="5; URL=/">
+	 <style>
+	 table, th, td {
+   border: 1px solid black;
+}
+	 </style>
+
 	<body>
 	Welcome to ultimateBravery!
 	`)
 	gotItems := lolapi.GetItems()
+	shown := 0
+	for _, item := range gotItems {
+		if item.Into == nil && item.From != nil && !strings.HasPrefix(item.Name, "Enchantment") {
+			shown++
+		}
+	}
+	io.WriteString(w, fmt.Sprintf("<h1>%v</h1>", shown))
 	io.WriteString(w, "<table>")
 	for _, item := range gotItems {
 		if item.Into == nil && item.From != nil && !strings.HasPrefix(item.Name, "Enchantment") {
@@ -43,24 +56,20 @@ func hello(w http.ResponseWriter, r *http.Request) {
 			io.WriteString(w, fmt.Sprintf(`<img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/%v" />`, item.Image.(map[string]interface{})["full"].(string)))
 			io.WriteString(w, "</td>")
 			io.WriteString(w, "<td>")
-			io.WriteString(w, "<PRE>")
+			io.WriteString(w, "<PRE2>")
 			io.WriteString(w, string(itemData))
-			io.WriteString(w, "</PRE>")
+			io.WriteString(w, "</PRE2>")
 			io.WriteString(w, "</td>")
 			io.WriteString(w, "</tr>")
+			shown++
 		}
 	}
 	io.WriteString(w, "</table>")
 	io.WriteString(w, "</body>")
 }
 
-func shit(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Shit")
-}
-
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", hello)
-	mux.HandleFunc("/shit", shit)
 	http.ListenAndServe(":8000", mux)
 }
