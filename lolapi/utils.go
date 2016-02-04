@@ -2,23 +2,30 @@ package lolapi
 
 import (
 	"net/http"
-	"fmt"
 	"io/ioutil"
 	"encoding/json"
 )
 
+var allItems  = []Item {}
+
 type Item struct {
 	Name string
 	SanitizedDescription string
-	Image string
+	Image interface{}
 	Description string
 	Plaintext string
 	from []string
 	Gold map[string]interface{}
 	Id int
+	From interface{}
+	Into interface{}
+	Depth int
 }
 
-func getResource(resourceUrl string) {
+func getResource(resourceUrl string) []Item {
+	if  len(allItems) > 0{
+		return allItems
+	}
 	response, err :=http.Get(resourceUrl + ADD_KEY + API_KEY)
 	if err != nil {
 		panic(err)
@@ -34,16 +41,15 @@ func getResource(resourceUrl string) {
 	if err != nil {
 		panic(err)
 	}
-	keys := []string {}
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
-	for key, value := range gotItems{
-		keys = append(keys, key)
+	for _, value := range gotItems{
 		var item Item
 		jsonItem, err := json.Marshal(value)
 		if err != nil {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &item)
-		fmt.Printf("%v\n", item)
+		allItems = append(allItems, item)
 	}
+	return allItems
 }
