@@ -1,0 +1,25 @@
+{{ define "build" }}
+
+<style>
+    div.Build {
+        border: 0.2em solid black;
+        display: inline-block;
+    }
+</style>
+
+
+<div class="Build">
+    <div>
+    {{ .Name }}
+    </div>
+    <div>
+        {{ template "itemInBuild" .Item1 }}
+        {{ template "itemInBuild" .Item2 }}
+        {{ template "itemInBuild" .Item3 }}
+        {{ template "itemInBuild" .Item4 }}
+        {{ template "itemInBuild" .Item5 }}
+        {{ template "itemInBuild" .Item6 }}
+    </div>
+</div>
+
+{{ end }}

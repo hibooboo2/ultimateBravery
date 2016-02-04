@@ -6,70 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"math/rand"
 )
 
-var AllItems = []Item {}
+type SummonerSpell struct {
 
-type Image struct {
-	Full string
-	Group string
-}
-
-type Gold struct {
-	Base int
-	Purchasable bool
-	Sell int
-	Total int
-}
-
-type Item struct {
-	Name string
-	SanitizedDescription string
-	Image Image
-	Description string
-	Plaintext string
-	from []string
-	Gold Gold
-	Id int
-	From []string
-	Into []string
-	Depth int
-	Stats interface{}
-}
-
-
-func (theItem *Item) CanUpgrade() bool {
-	if len(theItem.Into) == 0 {
-		return false;
-	}
-	for _, v := range theItem.Into {
-		if v != "" {
-			println(theItem.Name + " " + v)
-			return true
-		}
-	}
-	return false
-}
-
-
-func (theItem *Item) CantUpgrade() bool {
-	if len(theItem.Into) >= 1 {
-		return false;
-	}
-	return true
-}
-
-func (theItem *Item) IsAnUpgrade() bool {
-
-	if len(theItem.From) == 0 {
-		return false;
-	}
-	for _, v := range theItem.From {
-		if v != "" {
-			return true
-		}
-	}
-	return false
 }
 
 func getResource(resourceUrl string) interface{} {
@@ -89,4 +30,11 @@ func getResource(resourceUrl string) interface{} {
 		panic(err)
 	}
 	return data
+}
+
+func RandomNumber(max int) int {
+	if max <= 0 {
+		return 0
+	}
+	return rand.Intn(max)
 }

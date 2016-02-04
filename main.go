@@ -8,14 +8,12 @@ import (
 	"github.com/hibooboo2/ultimateBravery/lolapi"
 	"encoding/json"
 	"html/template"
-	"math/rand"
-	"strings"
 )
 
 func main() {
 	lolapi.InitializeItemsSlice()
 	mux := http.NewServeMux()
-	mux.HandleFunc("/template", templateAttempt)
+	mux.HandleFunc("/", templateAttempt)
 	http.ListenAndServe(":8000", mux)
 }
 
@@ -38,28 +36,20 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 
-	s1, err := template.ParseFiles("header.tmpl","footer.tmpl","item.tmpl","content.tmpl")
+	s1, err := template.ParseFiles("header.tmpl","footer.tmpl","item.tmpl", "itemInBuild.tmpl","content.tmpl", "build.tmpl")
 	if err != nil {
 		panic(err)
 	}
-	item := lolapi.AllItems[random(len(lolapi.AllItems) - 1)]
+	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
 	displayItems := []lolapi.Item {}
 	for _, val := range lolapi.AllItems {
-		if val.CantUpgrade() && val.IsAnUpgrade() && strings.Contains(val.Name, "Enchant"){
+		if val.CantUpgrade() && val.IsAnUpgrade() {
 			_, _ = json.MarshalIndent(val, "", "    ")
 			displayItems = append(displayItems, val)
 		}
 	}
 
 	s1.ExecuteTemplate(w, "header", item)
-	s1.ExecuteTemplate(w, "content", displayItems)
+	s1.ExecuteTemplate(w, "build", lolapi.RandomBuild())
 	s1.ExecuteTemplate(w, "footer", nil)
-}
-
-func random(max int) int {
-	if max <= 0 {
-		return 0
-	}
-	rand.Seed(time.Now().Unix())
-	return rand.Intn(max)
 }

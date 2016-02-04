@@ -1,0 +1,30 @@
+{{define "itemInBuild"}}
+<style>
+    div {
+        border: 0.2em solid black;
+        display: inline-flex;
+    }
+    div.ItemInBuild {
+        float: left;
+        margin: 3em 0em 0em 0em;
+        padding: 0.1em;
+    }
+    .AltText {
+        display: none;
+    }
+
+
+    .ItemInBuild:hover div.AltText {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        display: inline-block;
+        opacity: 1;
+    }
+</style>
+
+<div class="ItemInBuild">
+    <img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ .Image.Full }}" alt="{{ .Name }}"/>
+    <div class="AltText"> {{ template "item" . }} </div>
+</div>
+{{end}}
