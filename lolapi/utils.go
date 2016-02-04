@@ -44,13 +44,22 @@ func (theItem *Item) CanUpgrade() bool {
 	}
 	for _, v := range theItem.Into {
 		if v != "" {
+			println(theItem.Name + " " + v)
 			return true
 		}
 	}
 	return false
 }
 
-func (theItem *Item) IsUpgrade() bool {
+
+func (theItem *Item) CantUpgrade() bool {
+	if len(theItem.Into) >= 1 {
+		return false;
+	}
+	return true
+}
+
+func (theItem *Item) IsAnUpgrade() bool {
 
 	if len(theItem.From) == 0 {
 		return false;

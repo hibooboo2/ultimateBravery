@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"math/rand"
+	"strings"
 )
 
 func main() {
@@ -44,14 +45,14 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	item := lolapi.AllItems[random(len(lolapi.AllItems) - 1)]
 	displayItems := []lolapi.Item {}
 	for _, val := range lolapi.AllItems {
-		if !val.CanUpgrade() && val.IsUpgrade() {
+		if val.CantUpgrade() && val.IsAnUpgrade() && strings.Contains(val.Name, "Enchant"){
 			_, _ = json.MarshalIndent(val, "", "    ")
 			displayItems = append(displayItems, val)
 		}
 	}
 
 	s1.ExecuteTemplate(w, "header", item)
-	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
+	s1.ExecuteTemplate(w, "content", displayItems)
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
