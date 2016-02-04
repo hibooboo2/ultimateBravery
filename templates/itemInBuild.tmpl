@@ -18,13 +18,15 @@
         position: absolute;
         bottom: 0px;
         left: 0px;
-        display: inline-block;
+        height: 20em;
+        width: 20em;
+        display: inline;
         opacity: 1;
     }
 </style>
 
 <div class="ItemInBuild">
-    <img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ .Image.Full }}" alt="{{ .Name }}"/>
+    <img src="{{ .Picture }}" alt="{{ .Name }}"/>
     <div class="AltText"> {{ template "item" . }} </div>
 </div>
 {{end}}

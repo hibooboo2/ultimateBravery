@@ -2,8 +2,6 @@ package lolapi
 
 import (
 	"encoding/json"
-	"math/rand"
-	"time"
 )
 
 var AllItems = []Item {}
@@ -16,26 +14,19 @@ type Gold struct {
 }
 
 type Item struct {
-	Name string
-	SanitizedDescription string
-	Image Image
-	Description string
-	Plaintext string
-	from []string
-	Gold Gold
-	Id int
-	From []string
-	Into []string
-	Depth int
-	Stats interface{}
+	Name string `json:"omitempty"`
+	SanitizedDescription string `json:"omitempty"`
+	Image Image `json:"omitempty"`
+	Description string `json:"omitempty"`
+	Plaintext string `json:"omitempty"`
+	Gold Gold `json:"omitempty"`
+	Id int `json:"omitempty"`
+	From []string `json:"omitempty"`
+	Into []string `json:"omitempty"`
+	Depth int `json:"omitempty"`
+	Stats interface{} `json:"omitempty"`
+	Picture string `json:"omitempty"`
 }
-
-
-type Image struct {
-	Full string
-	Group string
-}
-
 
 func (theItem *Item) CanUpgrade() bool {
 	if len(theItem.Into) == 0 {
@@ -71,11 +62,12 @@ func (theItem *Item) IsAnUpgrade() bool {
 	return false
 }
 
+func (theItem *Item) Init() {
+	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
+}
 
 
-func InitializeItemsSlice() []Item {
-	rand.Seed(time.Now().Unix())
-
+func InitializeItemsSlice() {
 	items := getResource(ITEMS)
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
 	for _, value := range gotItems{
@@ -85,11 +77,24 @@ func InitializeItemsSlice() []Item {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &item)
+		item.Init()
 		AllItems = append(AllItems, item)
 	}
-	return AllItems
 }
 
 func RandomItem() Item {
-	return 	AllItems[RandomNumber(len(AllItems) - 1)]
+	itemsToUse := FullItems()
+	return 	itemsToUse[RandomNumber(len(itemsToUse) - 1)]
+}
+
+
+func FullItems() []Item {
+	filteredItems := []Item {}
+	for _, val := range AllItems {
+		if val.CantUpgrade() && val.IsAnUpgrade() {
+			_, _ = json.MarshalIndent(val, "", "    ")
+			filteredItems = append(filteredItems, val)
+		}
+	}
+	return filteredItems
 }

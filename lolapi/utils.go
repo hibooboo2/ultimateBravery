@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"os"
 	"math/rand"
+	"time"
+	"encoding/base64"
 )
 
 type SummonerSpell struct {
@@ -37,4 +39,35 @@ func RandomNumber(max int) int {
 		return 0
 	}
 	return rand.Intn(max)
+}
+
+func Init() {
+	rand.Seed(time.Now().Unix())
+	InitializeChampionsSlice()
+	InitializeItemsSlice()
+}
+
+func MakeLink(object interface{}) (string){
+	data, err := json.Marshal(object)
+	if err != nil {
+		return ""
+	}
+	str := base64.StdEncoding.EncodeToString(data)
+	fmt.Println(str)
+	return str
+}
+
+func FromLink(object string,  objectType interface{}) interface{} {
+
+	data, err := base64.StdEncoding.DecodeString(object)
+	if err != nil {
+		fmt.Println("error:", err)
+		return nil
+	}
+	err = json.Unmarshal(data, objectType)
+	if err != nil {
+		fmt.Println("error:", err)
+		return nil
+	}
+	return objectType
 }

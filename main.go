@@ -6,14 +6,18 @@ import (
 	"net/http"
 	"time"
 	"github.com/hibooboo2/ultimateBravery/lolapi"
-	"encoding/json"
 	"html/template"
+	"io/ioutil"
+	"fmt"
 )
 
+var s1 = InitTemplates()
+
 func main() {
-	lolapi.InitializeItemsSlice()
+	lolapi.Init()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", templateAttempt)
+	mux.HandleFunc("/build/", build)
 	http.ListenAndServe(":8000", mux)
 }
 
@@ -36,20 +40,31 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 
-	s1, err := template.ParseFiles("header.tmpl","footer.tmpl","item.tmpl", "itemInBuild.tmpl","content.tmpl", "build.tmpl")
+	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
+
+	s1.ExecuteTemplate(w, "header", item)
+	build  := lolapi.RandomBuild()
+	build.Init()
+	s1.ExecuteTemplate(w, "build", build)
+	println(build.PermaLink)
+	s1.ExecuteTemplate(w, "footer", nil)
+}
+
+func build(w http.ResponseWriter, r *http.Request) {
+	println(r.URL)
+
+}
+
+func InitTemplates() *template.Template {
+	files, _ := ioutil.ReadDir("./templates")
+	fileNames := []string {}
+	for _, f := range files {
+		fileNames = append(fileNames, fmt.Sprint("./templates/", f.Name()))
+	}
+
+	s1, err := template.ParseFiles(fileNames...)
 	if err != nil {
 		panic(err)
 	}
-	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
-	displayItems := []lolapi.Item {}
-	for _, val := range lolapi.AllItems {
-		if val.CantUpgrade() && val.IsAnUpgrade() {
-			_, _ = json.MarshalIndent(val, "", "    ")
-			displayItems = append(displayItems, val)
-		}
-	}
-
-	s1.ExecuteTemplate(w, "header", item)
-	s1.ExecuteTemplate(w, "build", lolapi.RandomBuild())
-	s1.ExecuteTemplate(w, "footer", nil)
+	return s1
 }

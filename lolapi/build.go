@@ -5,17 +5,18 @@ type Spell struct {
 }
 
 type LOLBuild struct {
-	Name string
-	Item1 Item
-	Item2 Item
-	Item3 Item
-	Item4 Item
-	Item5 Item
-	Item6 Item
-	Summoner1 SummonerSpell
-	Summoner2 SummonerSpell
-	Champion  Champion
-	SpellToMax Spell
+	Name string `json:"omitempty"`
+	Item1 Item `json:"omitempty"`
+	Item2 Item `json:"omitempty"`
+	Item3 Item `json:"omitempty"`
+	Item4 Item `json:"omitempty"`
+	Item5 Item `json:"omitempty"`
+	Item6 Item `json:"omitempty"`
+	Summoner1 SummonerSpell `json:"omitempty"`
+	Summoner2 SummonerSpell `json:"omitempty"`
+	Champion  Champion `json:"omitempty"`
+	SpellToMax Spell `json:"omitempty"`
+	PermaLink string `json:"omitempty"`
 }
 
 func (theBuild *LOLBuild) TotalCost() int{
@@ -27,6 +28,10 @@ func (theBuild *LOLBuild) TotalCost() int{
 	theBuild.Item6.Gold.Total
 }
 
+func (theBuild *LOLBuild) Init(){
+	theBuild.PermaLink = MakeLink(theBuild)
+}
+
 func RandomBuild() LOLBuild {
 	return LOLBuild{
 		Name: RandomBuildName(),
@@ -36,6 +41,7 @@ func RandomBuild() LOLBuild {
 		Item4: RandomItem(),
 		Item5: RandomItem(),
 		Item6: RandomItem(),
+		Champion: RandomChampion(),
 	}
 }
 
