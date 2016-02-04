@@ -4,52 +4,80 @@ import (
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"os"
 )
 
-var allItems  = []Item {}
+var AllItems = []Item {}
+
+type Image struct {
+	Full string
+	Group string
+}
+
+type Gold struct {
+	Base int
+	Purchasable bool
+	Sell int
+	Total int
+}
 
 type Item struct {
 	Name string
 	SanitizedDescription string
-	Image interface{}
+	Image Image
 	Description string
 	Plaintext string
 	from []string
-	Gold map[string]interface{}
+	Gold Gold
 	Id int
-	From interface{}
-	Into interface{}
+	From []string
+	Into []string
 	Depth int
+	Stats interface{}
 }
 
-func getResource(resourceUrl string) []Item {
-	if  len(allItems) > 0{
-		return allItems
+
+func (theItem *Item) CanUpgrade() bool {
+	if len(theItem.Into) == 0 {
+		return false;
 	}
+	for _, v := range theItem.Into {
+		if v != "" {
+			return true
+		}
+	}
+	return false
+}
+
+func (theItem *Item) IsUpgrade() bool {
+
+	if len(theItem.From) == 0 {
+		return false;
+	}
+	for _, v := range theItem.From {
+		if v != "" {
+			return true
+		}
+	}
+	return false
+}
+
+func getResource(resourceUrl string) interface{} {
 	response, err :=http.Get(resourceUrl + ADD_KEY + API_KEY)
-	if err != nil {
-		panic(err)
+	if err != nil || response.StatusCode >= 400 {
+		fmt.Fprintln(os.Stderr, "Response from riot: " + response.Status)
+		os.Exit(3)
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if  err != nil {
 		panic(err)
 	}
-	//fmt.Print(string(body))
-	var items interface{}
-	err = json.Unmarshal(body, &items)
+	var data interface{}
+	err = json.Unmarshal(body, &data)
 	if err != nil {
 		panic(err)
 	}
-	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
-	for _, value := range gotItems{
-		var item Item
-		jsonItem, err := json.Marshal(value)
-		if err != nil {
-			panic(err)
-		}
-		json.Unmarshal(jsonItem, &item)
-		allItems = append(allItems, item)
-	}
-	return allItems
+	return data
 }

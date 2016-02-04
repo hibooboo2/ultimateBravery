@@ -1,0 +1,33 @@
+{{define "item"}}
+<style>
+    table, td, tr {
+        vertical-align: middle;
+        border: 0.2em solid black;
+    }
+</style>
+<td><img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ .Image.Full }}"/></td>
+<td>
+    <pre>
+        Id:   {{ .Id }}
+        Image Full:   {{ .Image.Full }}
+        Name: {{ .Name }}
+        Cost: {{ .Gold.Total }}
+        {{ if len .Into}}
+        <td>
+            Into:
+            {{ range .Into  }}
+            <img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ . }}.png"/>
+            {{end}}
+        </td>
+        {{end}}
+        {{ if len .From}}
+        <td>
+            From:
+            {{ range .From }}
+                <img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ . }}.png"/>
+            {{end}}
+        </td>
+        {{end}}
+    </pre>
+</td>
+{{end}}

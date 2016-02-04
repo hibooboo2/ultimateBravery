@@ -7,11 +7,19 @@ import (
 	"time"
 	"github.com/hibooboo2/ultimateBravery/lolapi"
 	"encoding/json"
-	"strings"
-	"fmt"
+	"html/template"
+	"math/rand"
 )
 
-func hello(w http.ResponseWriter, r *http.Request) {
+func main() {
+	lolapi.InitializeItemsSlice()
+	mux := http.NewServeMux()
+	mux.HandleFunc("/template", templateAttempt)
+	http.ListenAndServe(":8000", mux)
+}
+
+
+func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	session, err := uuid.NewV4()
 	if err != nil {
 		w.WriteHeader(503)
@@ -28,48 +36,29 @@ func hello(w http.ResponseWriter, r *http.Request) {
 		}
 		http.SetCookie(w, &cookie)
 	}
-	io.WriteString(w, `<!DOCTYPE html>
-	 <!meta http-equiv="refresh" content="5; URL=/">
-	 <style>
-	 table, th, td {
-   border: 1px solid black;
-}
-	 </style>
 
-	<body>
-	Welcome to ultimateBravery!
-	`)
-	gotItems := lolapi.GetItems()
-	shown := 0
-	for _, item := range gotItems {
-		if item.Into == nil && item.From != nil && !strings.HasPrefix(item.Name, "Enchantment") {
-			shown++
+	s1, err := template.ParseFiles("header.tmpl","footer.tmpl","item.tmpl","content.tmpl")
+	if err != nil {
+		panic(err)
+	}
+	item := lolapi.AllItems[random(len(lolapi.AllItems) - 1)]
+	displayItems := []lolapi.Item {}
+	for _, val := range lolapi.AllItems {
+		if !val.CanUpgrade() && val.IsUpgrade() {
+			_, _ = json.MarshalIndent(val, "", "    ")
+			displayItems = append(displayItems, val)
 		}
 	}
-	io.WriteString(w, fmt.Sprintf("<h1>%v</h1>", shown))
-	io.WriteString(w, "<table>")
-	for _, item := range gotItems {
-		if item.Into == nil && item.From != nil && !strings.HasPrefix(item.Name, "Enchantment") {
-			itemData, _ := json.MarshalIndent(item, "", "    ")
-			io.WriteString(w, "<tr>")
-			io.WriteString(w, "<td>")
-			io.WriteString(w, fmt.Sprintf(`<img src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/%v" />`, item.Image.(map[string]interface{})["full"].(string)))
-			io.WriteString(w, "</td>")
-			io.WriteString(w, "<td>")
-			io.WriteString(w, "<PRE2>")
-			io.WriteString(w, string(itemData))
-			io.WriteString(w, "</PRE2>")
-			io.WriteString(w, "</td>")
-			io.WriteString(w, "</tr>")
-			shown++
-		}
-	}
-	io.WriteString(w, "</table>")
-	io.WriteString(w, "</body>")
+
+	s1.ExecuteTemplate(w, "header", item)
+	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
+	s1.ExecuteTemplate(w, "footer", nil)
 }
 
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", hello)
-	http.ListenAndServe(":8000", mux)
+func random(max int) int {
+	if max <= 0 {
+		return 0
+	}
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(max)
 }
