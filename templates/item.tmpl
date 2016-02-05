@@ -9,22 +9,22 @@
         Name: {{ .Name }}
         Cost: {{ .Gold.Total }}
     </pre>
-    <!--<div class="listItems">-->
-        <!--{{ if len .IntoItems }}-->
-            <!--Into:-->
-            <!--{{ range .IntoItems  }}-->
-                <!--{{template "itemInBuild" .}}-->
-            <!--{{end}}-->
-        <!--{{end}}-->
-    <!--</div>-->
+    <div class="listItems">
+        {{ if len .IntoItems }}
+            Into:
+            {{ range .IntoItems  }}
+                {{template "itemInBuild" .}}
+            {{end}}
+        {{end}}
+    </div>
 
-    <!--<div class="listItems">-->
-        <!--{{ if len .FromItems }}-->
-            <!--From:-->
-            <!--{{ range .FromItems }}-->
-                <!--{{ template "itemInBuild" . }}-->
-            <!--{{end}}-->
-        <!--{{end}}-->
-    <!--</div>-->
+    <div class="listItems">
+        {{ if len .FromItems }}
+            From:
+            {{ range .FromItems }}
+                {{ template "itemInBuild" . }}
+            {{end}}
+        {{end}}
+    </div>
 </div>
 {{end}}
