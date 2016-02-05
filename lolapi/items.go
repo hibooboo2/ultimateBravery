@@ -2,6 +2,7 @@ package lolapi
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 var AllItems = []Item{}
@@ -23,10 +24,13 @@ type Item struct {
 	Gold                 Gold
 	Id                   int
 	From                 []string
+	FromItems            []*Item
 	Into                 []string
+	IntoItems            []*Item
 	Depth                int
 	Stats                interface{}
 	Picture              string
+	PermaLink            string
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -35,7 +39,6 @@ func (theItem *Item) CanUpgrade() bool {
 	}
 	for _, v := range theItem.Into {
 		if v != "" {
-			println(theItem.Name + " " + v)
 			return true
 		}
 	}
@@ -64,6 +67,29 @@ func (theItem *Item) IsAnUpgrade() bool {
 
 func (theItem *Item) Init() {
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
+	theItem.FromItems = []*Item {}
+	//for _, val := range theItem.From {
+	//	id, err := strconv.Atoi(val)
+	//	if err != nil {
+	//		break
+	//	}
+	//	gotItem := GetItemById(id)
+	//	if gotItem != nil {
+	//		theItem.FromItems = append(theItem.FromItems, gotItem)
+	//	}
+	//}
+	//theItem.IntoItems = []*Item {}
+	//for _, val := range theItem.Into {
+	//	id, err := strconv.Atoi(val)
+	//	if err != nil {
+	//		break
+	//	}
+	//	gotItem := GetItemById(id)
+	//	if gotItem != nil {
+	//		theItem.IntoItems = append(theItem.IntoItems, gotItem)
+	//	}
+	//}
+	theItem.PermaLink = fmt.Sprintf("/items/%v",theItem.Id)
 }
 
 func InitializeItemsSlice() {

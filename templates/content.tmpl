@@ -1,12 +1,8 @@
 {{define "content"}}
-<h1>Items ({{ len . }} total)</h1>
-    <table>
-        <tbody>
-            {{ range . }}
-                <tr>
-                    {{ template "item" . }}
-                </tr>
-            {{end}}
-        </tbody>
-    </table>
+    <h1>Items ({{ len . }} total)</h1>
+    <div>
+        {{ range . }}
+                {{ template "itemInBuild" . }}
+        {{end}}
+    </div>
 {{end}}

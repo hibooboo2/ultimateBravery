@@ -3,30 +3,36 @@ package main
 import (
 	"fmt"
 	"github.com/hibooboo2/ultimateBravery/lolapi"
+	"github.com/gorilla/mux"
 	uuid "github.com/nu7hatch/gouuid"
 	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
+	"strconv"
 )
 
 var s1 = InitTemplates()
 
 func main() {
-	go func(x *template.Template) {
+	go func() {
 		for {
-			x = InitTemplates()
+			s1 = InitTemplates()
 			time.Sleep(time.Second * 2)
 		}
-	}(s1)
+	}()
 	lolapi.Init()
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", templateAttempt)
-	mux.HandleFunc("/build/", build)
+	mux := mux.NewRouter()
+	mux.HandleFunc("/*", templateAttempt)
+	mux.HandleFunc("/build/{id:[0-9A-Za-z]+}", build)
+	mux.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/"))))
+	mux.HandleFunc("/items", allItems)
 	mux.HandleFunc("/items/", allItems)
-	http.ListenAndServe(":8000", mux)
+	mux.HandleFunc("/items/{id:[0-9]+}", itemById)
+	http.Handle("/", mux)
+	http.ListenAndServe(":8000", nil)
 }
 
 func templateAttempt(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +59,6 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	build := lolapi.RandomBuild()
 	build.Init()
 	s1.ExecuteTemplate(w, "build", build)
-	println(build.PermaLink)
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
@@ -64,11 +69,22 @@ func allItems(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
+func itemById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		s1.ExecuteTemplate(w, "error", err)
+	}
+	item := lolapi.GetItemById(id)
+	s1.ExecuteTemplate(w, "header", item)
+	s1.ExecuteTemplate(w, "item", item)
+	s1.ExecuteTemplate(w, "footer", nil)
+}
+
 func build(w http.ResponseWriter, r *http.Request) {
-	split := strings.Split(r.URL.Path, "/")
-	fmt.Printf("%##v \n", split[2])
+	vars := mux.Vars(r)
 	s1.ExecuteTemplate(w, "header", nil)
-	build := lolapi.BuildFromLink(split[2])
+	build := lolapi.BuildFromLink(vars["buildLink"])
 	s1.ExecuteTemplate(w, "build", *build)
 	s1.ExecuteTemplate(w, "footer", nil)
 

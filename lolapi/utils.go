@@ -49,7 +49,7 @@ func Init() {
 func MakeLink(object interface{}) string {
 	data, err := json.Marshal(object)
 	if err != nil {
-		println("Failed to make link")
+		println("Failed to make a link.")
 		return ""
 	}
 	str := base64.StdEncoding.EncodeToString(data)

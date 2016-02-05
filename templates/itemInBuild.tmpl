@@ -1,32 +1,8 @@
 {{define "itemInBuild"}}
-<style>
-    div {
-        border: 0.2em solid black;
-        display: inline-flex;
-    }
-    div.ItemInBuild {
-        float: left;
-        margin: 3em 0em 0em 0em;
-        padding: 0.1em;
-    }
-    .AltText {
-        display: none;
-    }
-
-
-    .ItemInBuild:hover div.AltText {
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        height: 20em;
-        width: 20em;
-        display: inline;
-        opacity: 1;
-    }
-</style>
-
 <div class="ItemInBuild">
-    <img src="{{ .Picture }}" alt="{{ .Name }}"/>
-    <div class="AltText"> {{ template "item" . }} </div>
+    <a href="{{ .PermaLink }}">
+        <img class="itemSplash" src="{{ .Picture }}" alt="{{ .Name }}"/>
+    </a>
+    <div class="itemHover"> {{ template "item" . }} </div>
 </div>
 {{end}}

@@ -1,0 +1,42 @@
+div {
+    border: 0.2em solid black;
+    display: inline-flex;
+}
+.ItemInBuild {
+    float: left;
+    margin: 3em 0em 0em 0em;
+    padding: 0.1em;
+}
+
+.itemSplash {
+    height: 4em;
+    width: 4em;
+}
+
+.itemHover {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 20em;
+    width: 20em;
+    display: none;
+}
+
+
+.ItemInBuild:hover .itemHover {
+    display: inline;
+}
+
+img {
+    padding: 0.5em;
+    border-radius: 50%;
+}
+.item {
+    border: 0.2em solid black;
+    width: 22em;
+    display: inline-flex;
+}
+.intoItems {
+    border: 0.2em solid black;
+    width: 30%;
+}

@@ -1,7 +1,6 @@
 package lolapi
 
 import (
-	"fmt"
 	"github.com/Pallinder/go-randomdata"
 )
 
@@ -33,6 +32,7 @@ func (theBuild *LOLBuild) TotalCost() int {
 }
 
 func (theBuild *LOLBuild) Init() {
+	theBuild.Name = theBuild.Name + " " + theBuild.Champion.Name
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermaLink = "/build/" + MakeLink(buildLink)
 }
@@ -96,8 +96,6 @@ func RandomBuildName() string {
 
 func BuildFromLink(link string) *LOLBuild {
 	x := FromLink(link, &LOLBuildLink{})
-	fmt.Printf("%##v \n", x)
 	build := x.(*LOLBuildLink).getBuild()
-	fmt.Printf("%##v \n", build)
 	return &build
 }
