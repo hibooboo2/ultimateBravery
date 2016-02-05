@@ -5,41 +5,40 @@ import (
 	"fmt"
 )
 
-var AllChampions =  []Champion {}
+var AllChampions = []Champion{}
 var allChampsMap = make(map[int]*Champion)
 
 type Skin struct {
-	Id int
+	Id   int
 	Name string
-	Num int
+	Num  int
 }
 
 func (champ *Champion) getSkinPic(skinNumber int) string {
-	if (skinNumber > len(champ.Skins)){
+	if skinNumber > len(champ.Skins) {
 		return ""
 	}
-	return fmt.Sprintf(CHAMPION_LOADING,champ.Key, skinNumber)
+	return fmt.Sprintf(CHAMPION_LOADING, champ.Key, skinNumber)
 }
 
 type Champion struct {
-	Id int
-	Key string
-	Name string
+	Id    int
+	Key   string
+	Name  string
 	Title string
 	Image Image
 	Skins []Skin
 }
 
 func RandomChampion() *Champion {
-	return &AllChampions[RandomNumber(len(AllChampions) - 1)]
+	return &AllChampions[RandomNumber(len(AllChampions)-1)]
 
 }
-
 
 func InitializeChampionsSlice() {
 	items := getResource(CHAMPIONS)
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
-	for _, value := range gotItems{
+	for _, value := range gotItems {
 		var champ Champion
 		jsonItem, err := json.Marshal(value)
 		if err != nil {

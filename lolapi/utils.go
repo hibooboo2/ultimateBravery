@@ -1,29 +1,28 @@
 package lolapi
 
 import (
-	"net/http"
-	"io/ioutil"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"os"
 	"time"
-	"encoding/base64"
 )
 
 type SummonerSpell struct {
-
 }
 
 func getResource(resourceUrl string) interface{} {
-	response, err :=http.Get(resourceUrl + ADD_KEY + API_KEY)
+	response, err := http.Get(resourceUrl + ADD_KEY + API_KEY)
 	if err != nil || response.StatusCode >= 400 {
-		fmt.Fprintln(os.Stderr, "Response from riot: " + response.Status)
+		fmt.Fprintln(os.Stderr, "Response from riot: "+response.Status)
 		os.Exit(3)
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
-	if  err != nil {
+	if err != nil {
 		panic(err)
 	}
 	var data interface{}
@@ -57,7 +56,7 @@ func MakeLink(object interface{}) string {
 	return str
 }
 
-func FromLink(object string,  objectType interface{}) interface{} {
+func FromLink(object string, objectType interface{}) interface{} {
 
 	data, err := base64.StdEncoding.DecodeString(object)
 	if err != nil {

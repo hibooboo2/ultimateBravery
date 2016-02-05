@@ -1,8 +1,6 @@
 package lolapi
 
-
 type Image struct {
-	Full string
+	Full  string
 	Group string
 }
-

@@ -4,34 +4,34 @@ import (
 	"encoding/json"
 )
 
-var AllItems = []Item {}
+var AllItems = []Item{}
 var allItemsMap = make(map[int]*Item)
 
 type Gold struct {
-	Base int
+	Base        int
 	Purchasable bool
-	Sell int
-	Total int
+	Sell        int
+	Total       int
 }
 
 type Item struct {
-	Name string
+	Name                 string
 	SanitizedDescription string
-	Image Image
-	Description string
-	Plaintext string
-	Gold Gold
-	Id int
-	From []string
-	Into []string
-	Depth int
-	Stats interface{}
-	Picture string
+	Image                Image
+	Description          string
+	Plaintext            string
+	Gold                 Gold
+	Id                   int
+	From                 []string
+	Into                 []string
+	Depth                int
+	Stats                interface{}
+	Picture              string
 }
 
 func (theItem *Item) CanUpgrade() bool {
 	if len(theItem.Into) == 0 {
-		return false;
+		return false
 	}
 	for _, v := range theItem.Into {
 		if v != "" {
@@ -42,10 +42,9 @@ func (theItem *Item) CanUpgrade() bool {
 	return false
 }
 
-
 func (theItem *Item) CantUpgrade() bool {
 	if len(theItem.Into) >= 1 {
-		return false;
+		return false
 	}
 	return true
 }
@@ -53,7 +52,7 @@ func (theItem *Item) CantUpgrade() bool {
 func (theItem *Item) IsAnUpgrade() bool {
 
 	if len(theItem.From) == 0 {
-		return false;
+		return false
 	}
 	for _, v := range theItem.From {
 		if v != "" {
@@ -67,11 +66,10 @@ func (theItem *Item) Init() {
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
 }
 
-
 func InitializeItemsSlice() {
 	items := getResource(ITEMS)
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
-	for _, value := range gotItems{
+	for _, value := range gotItems {
 		var item Item
 		jsonItem, err := json.Marshal(value)
 		if err != nil {
@@ -86,7 +84,7 @@ func InitializeItemsSlice() {
 
 func RandomItem() *Item {
 	itemsToUse := FullItems()
-	return 	&itemsToUse[RandomNumber(len(itemsToUse) - 1)]
+	return &itemsToUse[RandomNumber(len(itemsToUse)-1)]
 }
 
 func GetItemById(id int) *Item {
@@ -94,7 +92,7 @@ func GetItemById(id int) *Item {
 }
 
 func FullItems() []Item {
-	filteredItems := []Item {}
+	filteredItems := []Item{}
 	for _, val := range AllItems {
 		if val.CantUpgrade() && val.IsAnUpgrade() {
 			filteredItems = append(filteredItems, val)

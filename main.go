@@ -1,20 +1,26 @@
 package main
 
 import (
-	uuid "github.com/nu7hatch/gouuid"
-	"io"
-	"net/http"
-	"time"
-	"github.com/hibooboo2/ultimateBravery/lolapi"
-	"html/template"
-	"io/ioutil"
 	"fmt"
+	"github.com/hibooboo2/ultimateBravery/lolapi"
+	uuid "github.com/nu7hatch/gouuid"
+	"html/template"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"strings"
+	"time"
 )
 
 var s1 = InitTemplates()
 
 func main() {
+	go func(x *template.Template) {
+		for {
+			x = InitTemplates()
+			time.Sleep(time.Second * 2)
+		}
+	}(s1)
 	lolapi.Init()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", templateAttempt)
@@ -31,7 +37,7 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = r.Cookie("UB_UUID")
-	if  err != nil {
+	if err != nil {
 		cookie := http.Cookie{
 			Name:    "UB_UUID",
 			Value:   session.String(),
@@ -41,10 +47,10 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 
-	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
+	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems)-1)]
 
 	s1.ExecuteTemplate(w, "header", item)
-	build  := lolapi.RandomBuild()
+	build := lolapi.RandomBuild()
 	build.Init()
 	s1.ExecuteTemplate(w, "build", build)
 	println(build.PermaLink)
@@ -52,14 +58,14 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
-	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
+	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems)-1)]
 	s1.ExecuteTemplate(w, "header", item)
 	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func build(w http.ResponseWriter, r *http.Request) {
-	split := strings.Split(r.URL.Path,"/")
+	split := strings.Split(r.URL.Path, "/")
 	fmt.Printf("%##v \n", split[2])
 	s1.ExecuteTemplate(w, "header", nil)
 	build := lolapi.BuildFromLink(split[2])
@@ -70,7 +76,7 @@ func build(w http.ResponseWriter, r *http.Request) {
 
 func InitTemplates() *template.Template {
 	files, _ := ioutil.ReadDir("./templates")
-	fileNames := []string {}
+	fileNames := []string{}
 	for _, f := range files {
 		fileNames = append(fileNames, fmt.Sprint("./templates/", f.Name()))
 	}
