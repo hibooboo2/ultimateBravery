@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"fmt"
+	"strings"
 )
 
 var s1 = InitTemplates()
@@ -18,9 +19,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", templateAttempt)
 	mux.HandleFunc("/build/", build)
+	mux.HandleFunc("/items/", allItems)
 	http.ListenAndServe(":8000", mux)
 }
-
 
 func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	session, err := uuid.NewV4()
@@ -50,8 +51,20 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
+func allItems(w http.ResponseWriter, r *http.Request) {
+	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems) - 1)]
+	s1.ExecuteTemplate(w, "header", item)
+	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
+	s1.ExecuteTemplate(w, "footer", nil)
+}
+
 func build(w http.ResponseWriter, r *http.Request) {
-	println(r.URL)
+	split := strings.Split(r.URL.Path,"/")
+	fmt.Printf("%##v \n", split[2])
+	s1.ExecuteTemplate(w, "header", nil)
+	build := lolapi.BuildFromLink(split[2])
+	s1.ExecuteTemplate(w, "build", *build)
+	s1.ExecuteTemplate(w, "footer", nil)
 
 }
 

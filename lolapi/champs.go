@@ -6,6 +6,7 @@ import (
 )
 
 var AllChampions =  []Champion {}
+var allChampsMap = make(map[int]*Champion)
 
 type Skin struct {
 	Id int
@@ -29,8 +30,8 @@ type Champion struct {
 	Skins []Skin
 }
 
-func RandomChampion() Champion {
-	return AllChampions[RandomNumber(len(AllChampions) - 1)]
+func RandomChampion() *Champion {
+	return &AllChampions[RandomNumber(len(AllChampions) - 1)]
 
 }
 
@@ -46,5 +47,10 @@ func InitializeChampionsSlice() {
 		}
 		json.Unmarshal(jsonItem, &champ)
 		AllChampions = append(AllChampions, champ)
+		allChampsMap[champ.Id] = &champ
 	}
+}
+
+func GetChampionById(id int) *Champion {
+	return allChampsMap[id]
 }

@@ -11,7 +11,9 @@
 <div class="Build">
     <div>
     {{ template "champion" .Champion }}
-    {{ .Name }}
+    {{ .Name }} </br>
+    <a href="{{ .PermaLink }}">PermaLink</a>
+
     </div>
     <div>
         {{ template "itemInBuild" .Item1 }}

@@ -1,22 +1,27 @@
 package lolapi
 
+import (
+	"github.com/Pallinder/go-randomdata"
+	"fmt"
+)
+
 type Spell struct {
 
 }
 
 type LOLBuild struct {
-	Name string `json:"omitempty"`
-	Item1 Item `json:"omitempty"`
-	Item2 Item `json:"omitempty"`
-	Item3 Item `json:"omitempty"`
-	Item4 Item `json:"omitempty"`
-	Item5 Item `json:"omitempty"`
-	Item6 Item `json:"omitempty"`
-	Summoner1 SummonerSpell `json:"omitempty"`
-	Summoner2 SummonerSpell `json:"omitempty"`
-	Champion  Champion `json:"omitempty"`
-	SpellToMax Spell `json:"omitempty"`
-	PermaLink string `json:"omitempty"`
+	Name string
+	Item1 *Item
+	Item2 *Item
+	Item3 *Item
+	Item4 *Item
+	Item5 *Item
+	Item6 *Item
+	Summoner1 *SummonerSpell
+	Summoner2 *SummonerSpell
+	Champion  *Champion
+	SpellToMax *Spell
+	PermaLink string
 }
 
 func (theBuild *LOLBuild) TotalCost() int{
@@ -29,7 +34,8 @@ func (theBuild *LOLBuild) TotalCost() int{
 }
 
 func (theBuild *LOLBuild) Init(){
-	theBuild.PermaLink = MakeLink(theBuild)
+	buildLink := theBuild.getBuildLink()
+	theBuild.PermaLink = "/build/" +MakeLink(buildLink)
 }
 
 func RandomBuild() LOLBuild {
@@ -45,6 +51,54 @@ func RandomBuild() LOLBuild {
 	}
 }
 
+type LOLBuildLink struct {
+	Name string
+	Item1 int
+	Item2 int
+	Item3 int
+	Item4 int
+	Item5 int
+	Item6 int
+	Summoner1 string
+	Summoner2 string
+	Champion  int
+	SpellToMax string
+}
+
+func (theLink *LOLBuildLink) getBuild() LOLBuild {
+	return LOLBuild{
+		Name: theLink.Name,
+		Item1: GetItemById(theLink.Item1),
+		Item2: GetItemById(theLink.Item2),
+		Item3: GetItemById(theLink.Item3),
+		Item4: GetItemById(theLink.Item4),
+		Item5: GetItemById(theLink.Item5),
+		Item6: GetItemById(theLink.Item6),
+		Champion: GetChampionById(theLink.Champion),
+	}
+}
+
+func (theLink *LOLBuild) getBuildLink() LOLBuildLink {
+	return LOLBuildLink{
+		Name: theLink.Name,
+		Item1: theLink.Item1.Id,
+		Item2: theLink.Item2.Id,
+		Item3: theLink.Item3.Id,
+		Item4: theLink.Item4.Id,
+		Item5: theLink.Item5.Id,
+		Item6: theLink.Item6.Id,
+		Champion: theLink.Champion.Id,
+	}
+}
+
 func RandomBuildName() string {
-	return "Some name"
+	return randomdata.SillyName()
+}
+
+func BuildFromLink(link string) *LOLBuild {
+	x := FromLink(link, &LOLBuildLink{})
+	fmt.Printf("%##v \n", x)
+	build := x.(*LOLBuildLink).getBuild()
+	fmt.Printf("%##v \n", build)
+	return &build
 }

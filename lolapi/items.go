@@ -5,6 +5,7 @@ import (
 )
 
 var AllItems = []Item {}
+var allItemsMap = make(map[int]*Item)
 
 type Gold struct {
 	Base int
@@ -14,18 +15,18 @@ type Gold struct {
 }
 
 type Item struct {
-	Name string `json:"omitempty"`
-	SanitizedDescription string `json:"omitempty"`
-	Image Image `json:"omitempty"`
-	Description string `json:"omitempty"`
-	Plaintext string `json:"omitempty"`
-	Gold Gold `json:"omitempty"`
-	Id int `json:"omitempty"`
-	From []string `json:"omitempty"`
-	Into []string `json:"omitempty"`
-	Depth int `json:"omitempty"`
-	Stats interface{} `json:"omitempty"`
-	Picture string `json:"omitempty"`
+	Name string
+	SanitizedDescription string
+	Image Image
+	Description string
+	Plaintext string
+	Gold Gold
+	Id int
+	From []string
+	Into []string
+	Depth int
+	Stats interface{}
+	Picture string
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -79,20 +80,23 @@ func InitializeItemsSlice() {
 		json.Unmarshal(jsonItem, &item)
 		item.Init()
 		AllItems = append(AllItems, item)
+		allItemsMap[item.Id] = &item
 	}
 }
 
-func RandomItem() Item {
+func RandomItem() *Item {
 	itemsToUse := FullItems()
-	return 	itemsToUse[RandomNumber(len(itemsToUse) - 1)]
+	return 	&itemsToUse[RandomNumber(len(itemsToUse) - 1)]
 }
 
+func GetItemById(id int) *Item {
+	return allItemsMap[id]
+}
 
 func FullItems() []Item {
 	filteredItems := []Item {}
 	for _, val := range AllItems {
 		if val.CantUpgrade() && val.IsAnUpgrade() {
-			_, _ = json.MarshalIndent(val, "", "    ")
 			filteredItems = append(filteredItems, val)
 		}
 	}

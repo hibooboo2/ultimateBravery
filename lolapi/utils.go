@@ -47,13 +47,13 @@ func Init() {
 	InitializeItemsSlice()
 }
 
-func MakeLink(object interface{}) (string){
+func MakeLink(object interface{}) string {
 	data, err := json.Marshal(object)
 	if err != nil {
+		println("Failed to make link")
 		return ""
 	}
 	str := base64.StdEncoding.EncodeToString(data)
-	fmt.Println(str)
 	return str
 }
 
