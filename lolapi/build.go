@@ -10,7 +10,7 @@ type Spell struct {
 
 type LOLBuild struct {
 	Name       string
-	Items      []Item
+	Items      []*Item
 	Summoner1  *SummonerSpell
 	Summoner2  *SummonerSpell
 	Champion   *Champion
@@ -30,7 +30,7 @@ type LOLBuildLink struct {
 }
 
 func (theLink *LOLBuildLink) getBuild() LOLBuild {
-	items := []Item {}
+	items := []*Item {}
 	for _, value := range theLink.Items {
 		items = append(items, GetItemById(value))
 	}
@@ -68,7 +68,9 @@ func (theBuild *LOLBuild) TotalCost() int {
 func (theBuild *LOLBuild) init() {
 	theBuild.Name = theBuild.Name + " " + theBuild.Champion.Name
 	for _, val := range theBuild.Items {
-		val.Init()
+		if  val.FromItems == nil {
+			val.Init()
+		}
 	}
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -ex
+
+cd $(dirname $0)/..
+
+export GOPATH=$(pwd)/Godeps/_workspace
+mkdir -p $(pwd)/Godeps/_workspace/src/github.com/hibooboo2/
+ln -s $(pwd) $(pwd)/Godeps/_workspace/src/github.com/hibooboo2/ultimateBravery

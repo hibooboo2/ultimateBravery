@@ -16,10 +16,12 @@ type SummonerSpell struct {
 }
 
 func getResource(resourceUrl string) interface{} {
-	response, err := http.Get(resourceUrl + ADD_KEY + API_KEY)
+	resourceUrl = resourceUrl + ADD_KEY + API_KEY
+	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
 		fmt.Fprintln(os.Stderr, "Response from riot: "+response.Status)
-		os.Exit(3)
+		fmt.Fprintln(os.Stderr, resourceUrl)
+		return nil
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)

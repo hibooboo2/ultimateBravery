@@ -32,7 +32,6 @@ func main() {
 	}
 	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(process(notFound))
 	myMux.Middle("/", templateAttempt).Name("Root")
-	myMux.Middle("/raw", raw).Name("Raw")
 	myMux.Middle("/build/{id:[0-9A-Za-z]+}", build).Name("build")
 	myMux.TheRouter.PathPrefix("/static/").Handler(
 		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))).Name("static")
@@ -69,12 +68,6 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 
 func allItems(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
-}
-
-func raw(w http.ResponseWriter, r *http.Request) {
-	item := lolapi.GetItemFromRiot("3114")
-	item.Init()
-	s1.ExecuteTemplate(w, "item", item)
 }
 
 func itemById(w http.ResponseWriter, r *http.Request) {
