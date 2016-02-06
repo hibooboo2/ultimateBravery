@@ -30,7 +30,7 @@ func main() {
 	myMux := Router{
 		TheRouter: mux,
 	}
-	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(notFound)
+	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(process(notFound))
 	myMux.Middle("/", templateAttempt).Name("Root")
 	myMux.Middle("/build/{id:[0-9A-Za-z]+}", build).Name("build")
 	myMux.TheRouter.PathPrefix("/static/").Handler(
@@ -63,32 +63,25 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 	}
 	theMap := lolapi.AllMaps[0]
 	build := lolapi.RandomBraveryBuild(theMap)
-	s1.ExecuteTemplate(w, "header", build.Items[3])
 	s1.ExecuteTemplate(w, "build", build)
-	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
-	s1.ExecuteTemplate(w, "header", lolapi.RandomItem(nil))
 	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
-	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func itemById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	item := lolapi.GetItemByIdString(vars["id"])
-	s1.ExecuteTemplate(w, "header", item)
+	item.Init()
 	s1.ExecuteTemplate(w, "item", item)
-	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func build(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fmt.Printf("%##v", vars)
-	s1.ExecuteTemplate(w, "header", lolapi.RandomItem(nil))
 	build := lolapi.BuildFromLink(vars["buildLink"])
 	s1.ExecuteTemplate(w, "build", *build)
-	s1.ExecuteTemplate(w, "footer", nil)
 
 }
 
@@ -124,20 +117,20 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 		Vars: vars,
 	}
 	fmt.Println(vars["host"])
-	s1.ExecuteTemplate(w, "header", nil)
 	s1.ExecuteTemplate(w, "404", lolapi.Pretty(requestProxy))
-	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
-		defer next (w, r)
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
 			if route != nil {
 				fmt.Println(route.GetName())
 			}
 		}
+		s1.ExecuteTemplate(w, "header", nil)
+		next (w, r)
+		s1.ExecuteTemplate(w, "footer", nil)
 	}
 
 }

@@ -5,8 +5,8 @@ import (
 	"fmt"
 )
 
-var AllItems = []*Item{}
-var allItemsMap = make(map[int]*Item)
+var AllItems = []Item{}
+var allItemsMap = make(map[int]Item)
 
 type Gold struct {
 	Base        int
@@ -24,14 +24,14 @@ type Item struct {
 	Gold                 Gold
 	Id                   int
 	From                 []string
-	FromItems            []*Item
+	FromItems            []Item
 	Into                 []string
-	IntoItems            []*Item
+	IntoItems            []Item
 	Depth                int
 	Stats                interface{}
 	Picture              string
 	PermLink             string
-	Maps                 map[string]bool
+	Maps                 map[int]bool
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -48,13 +48,13 @@ func (theItem *Item) CanUpgrade() bool {
 
 func (theItem *Item) CanUseOnMap(theMap *Map) bool {
 	fmt.Sprintf("%##v \n", theItem)
-	mapKey := fmt.Sprint(theMap.MapId)
-	fmt.Println(mapKey)
-	canUse := theItem.Maps[mapKey]
+	//mapKey := fmt.Sprint(theMap.MapId)
+	//fmt.Println(mapKey)
+	canUse := theItem.Maps[theMap.MapId]
 	return canUse
 }
 
-func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item) bool {
+func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []Item) bool {
 	if theItem.CanUseOnMap(theMap) {
 		for _, otherItem := range otherItems {
 			if otherItem.Id == theItem.Id {
@@ -85,24 +85,24 @@ func (theItem *Item) IsAnUpgrade() bool {
 	return false
 }
 
-func (theItem *Item) Init() {
+func (theItem *Item) Init() *Item {
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
-	theItem.FromItems = []*Item {}
+	theItem.FromItems = []Item {}
 	for _, val := range theItem.From {
 		gotItem := GetItemByIdString(val)
-		if gotItem != nil {
-			theItem.FromItems = append(theItem.FromItems, gotItem)
-		}
+		theItem.FromItems = append(theItem.FromItems, gotItem)
 	}
-	theItem.IntoItems = []*Item {}
+	theItem.IntoItems = []Item {}
 	for _, val := range theItem.Into {
 		gotItem := GetItemByIdString(val)
-		if gotItem != nil {
-			theItem.IntoItems = append(theItem.IntoItems, gotItem)
-		}
+		theItem.IntoItems = append(theItem.IntoItems, gotItem)
 	}
 	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
 	fmt.Printf("%##v \n ", theItem.Maps)
+	if theItem.Verify() == nil {
+		return theItem
+	}
+	return nil
 }
 
 func (theItem *Item) Verify() error {
@@ -110,9 +110,6 @@ func (theItem *Item) Verify() error {
 		for _, idString := range theItem.Into {
 			matched := false
 			for _, item := range theItem.IntoItems {
-				if item == nil {
-					return fmt.Errorf("From item is nil. Item %v", theItem.Name)
-				}
 				if item.Id == idStringToId(idString) {
 					matched = true
 					break
@@ -127,9 +124,6 @@ func (theItem *Item) Verify() error {
 		for _, idString := range theItem.From {
 			matched := false
 			for _, item := range theItem.FromItems {
-				if item == nil {
-					return fmt.Errorf("From item is nil. Item %v", theItem.Name)
-				}
 				if item.Id == idStringToId(idString) {
 					matched = true
 					break
@@ -156,8 +150,8 @@ func initializeItemsSlice() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &item)
-		AllItems = append(AllItems, &item)
-		allItemsMap[item.Id] = &item
+		AllItems = append(AllItems, item)
+		allItemsMap[item.Id] = item
 	}
 	for _, item := range AllItems {
 		item.Init()
@@ -172,28 +166,29 @@ func initializeItemsSlice() {
 	fmt.Printf("%##v \n", failedToVerify)
 }
 
-func RandomItem(itemsToUse []*Item) *Item {
+func RandomItem(itemsToUse []Item) Item {
 	if itemsToUse == nil {
 		itemsToUse = AllItems
 	}
 	return itemsToUse[RandomNumber(len(itemsToUse)-1)]
 }
 
-func RandomItemFromMap(theMap *Map, otherItems []*Item) *Item {
+func RandomItemFromMap(theMap *Map, otherItems []Item) Item {
 
 	item := AllItems[RandomNumber(len(AllItems)-1)]
 	for !item.CanUseInBuild(theMap, otherItems) {
 		item = AllItems[RandomNumber(len(AllItems)-1)]
 	}
+	item.Init()
 	return item
 }
 
-func RandomItemsFromMap(howMany int, theMap *Map) []*Item {
+func RandomItemsFromMap(howMany int, theMap *Map) []Item {
 	if theMap == nil {
 		theMap = RandomMap()
 	}
 	total := 0
-	items := []*Item {}
+	items := []Item {}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items)
 		items = append(items, item)
@@ -202,16 +197,18 @@ func RandomItemsFromMap(howMany int, theMap *Map) []*Item {
 	return items
 }
 
-func GetItemById(id int) *Item {
-	return allItemsMap[id]
+func GetItemById(id int) Item {
+	item := allItemsMap[id]
+	return item
 }
 
-func GetItemByIdString(idString string) *Item {
-	return allItemsMap[idStringToId(idString)]
+func GetItemByIdString(idString string) Item {
+	item := allItemsMap[idStringToId(idString)]
+	return item
 }
 
-func FullItems() []*Item {
-	filteredItems := []*Item{}
+func FullItems() []Item {
+	filteredItems := []Item{}
 	for _, val := range AllItems {
 		if val.CantUpgrade() && val.IsAnUpgrade() {
 			filteredItems = append(filteredItems, val)
@@ -220,10 +217,10 @@ func FullItems() []*Item {
 	return filteredItems
 }
 
-func MapItems(theMap *Map) []*Item {
-	filteredItems := []*Item{}
+func MapItems(theMap *Map) []Item {
+	filteredItems := []Item{}
 	for _, val := range AllItems {
-		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[fmt.Sprint(theMap.MapId)] {
+		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[theMap.MapId] {
 			filteredItems = append(filteredItems, val)
 		}
 	}

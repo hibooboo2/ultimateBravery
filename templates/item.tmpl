@@ -7,7 +7,7 @@
         Name: {{ .Name }}
         Cost: {{ .Gold.Total }}
         Map:  {{ .Map }}
-        {{ printf "%##v" . }}
+        {{ . }}
     </pre>
     <div class="listItems">
         {{ if len .IntoItems }}
