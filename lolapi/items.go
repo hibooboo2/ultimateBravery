@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 var AllItems = []*Item{}
@@ -63,13 +62,13 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 	if theItem.Group == "FlaskGroup" || theItem.Group == "JungleItems" {
 		return false
 	}
-	if strings.Contains(theItem.Group, "Boots") {
-		for _, otherItem := range otherItems {
-			if strings.Contains(otherItem.Group, "Boots") {
-				return false
-			}
-		}
-	}
+	//if strings.Contains(theItem.Group, "Boots") {
+	//	for _, otherItem := range otherItems {
+	//		if strings.Contains(otherItem.Group, "Boots") {
+	//			return false
+	//		}
+	//	}
+	//}
 	if !theItem.CanUseOnMap(theMap) {
 		return false
 	}

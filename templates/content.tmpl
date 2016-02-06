@@ -1,8 +1,8 @@
 {{define "content"}}
     <h1>Items ({{ len . }} total)</h1>
-    <div class="allItems">
+    <div class="itemList scrollList">
         {{ range . }}
-                {{ template "item" . }}
+                {{ template "itemInBuild" . }}
         {{end}}
     </div>
 {{end}}

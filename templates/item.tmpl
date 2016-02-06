@@ -3,27 +3,27 @@
     {{ template "itemSplash" . }}
     {{ .SanitizedDescription }}
     <pre>
-        Id:   {{ .Id }}
-        Name: {{ .Name }}
-        Cost: {{ .Gold.Total }}
-        Maps: {{ .Maps }}
-        Group: {{ .Group }}
+        Id           : {{ .Id }}
+        Name         : {{ .Name }}
+        Cost (Base)  : {{ .Gold.Base }}
+        Cost (Total) : {{ .Gold.Total }}
     </pre>
-    <div class="listItems">
+    <div    class="bottom">
         {{ if len .IntoItems }}
-            Into:
-            {{ range .IntoItems  }}
-                {{template "itemSplash" .}}
-            {{end}}
+            <div class="itemList">
+                Into:
+                {{ range .IntoItems  }}
+                    {{template "itemSplash" .}}
+                {{end}}
+            </div>
         {{end}}
-    </div>
-
-    <div class="listItems">
         {{ if len .FromItems }}
-            From:
-            {{ range .FromItems }}
-                {{ template "itemSplash" . }}
-            {{end}}
+            <div class="itemList">
+                From:
+                {{ range .FromItems }}
+                    {{ template "itemSplash" . }}
+                {{end}}
+            </div>
         {{end}}
     </div>
 </div>

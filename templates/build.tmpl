@@ -1,22 +1,11 @@
 {{ define "build" }}
-
-<style>
-    div.Build {
-        border: 0.2em solid black;
-        display: inline-block;
-    }
-</style>
-
-<div class="Build">
-    <div>
+<div class="build">
     {{ template "champion" .Champion }}
     {{ template "map" .Map }}
     {{ .Name }}
     </br>
     <a href="{{ .PermLink }}">PermLink</a>
-
-    </div>
-    <div class="itemsInBuild">
+    <div class="itemList bottom">
         {{ range .Items }}
             {{ template "itemInBuild" . }}
         {{ end }}

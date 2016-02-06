@@ -19,7 +19,7 @@ func getResource(resourceUrl string) interface{} {
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
-		fmt.Fprintln(os.Stderr, "Response from riot: "+response.Status)
+		fmt.Fprintln(os.Stderr, "Response from riot: "+ response.Status)
 		fmt.Fprintln(os.Stderr, resourceUrl)
 		return nil
 	}

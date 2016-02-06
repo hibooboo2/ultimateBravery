@@ -40,7 +40,7 @@ func main() {
 	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
 	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
 	http.Handle("/", mux)
-	err := http.ListenAndServe(":8000", nil)
+	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		println(err.Error())
 	}
@@ -140,6 +140,7 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
+		defer r.Body.Close()
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
 			if route != nil {
@@ -149,7 +150,6 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		s1.ExecuteTemplate(w, "header", nil)
 		next (w, r)
 		s1.ExecuteTemplate(w, "footer", nil)
-		r.Body.Close()
 	}
 
 }
