@@ -3,6 +3,7 @@ package lolapi
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 var AllItems = []Item{}
@@ -31,7 +32,8 @@ type Item struct {
 	Stats                interface{}
 	Picture              string
 	PermLink             string
-	Maps                 map[int]bool
+	Maps                 map[string]bool
+	Group               string
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -47,10 +49,7 @@ func (theItem *Item) CanUpgrade() bool {
 }
 
 func (theItem *Item) CanUseOnMap(theMap *Map) bool {
-	fmt.Sprintf("%##v \n", theItem)
-	//mapKey := fmt.Sprint(theMap.MapId)
-	//fmt.Println(mapKey)
-	canUse := theItem.Maps[theMap.MapId]
+	canUse := theItem.Maps[strconv.Itoa(theMap.MapId)]
 	return canUse
 }
 
@@ -86,23 +85,38 @@ func (theItem *Item) IsAnUpgrade() bool {
 }
 
 func (theItem *Item) Init() *Item {
-	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
+	theItem.partialInit()
 	theItem.FromItems = []Item {}
 	for _, val := range theItem.From {
-		gotItem := GetItemByIdString(val)
-		theItem.FromItems = append(theItem.FromItems, gotItem)
+		gotItem := GetItemFromRiot(val)
+		theItem.FromItems = append(theItem.FromItems, *gotItem)
 	}
 	theItem.IntoItems = []Item {}
 	for _, val := range theItem.Into {
-		gotItem := GetItemByIdString(val)
-		theItem.IntoItems = append(theItem.IntoItems, gotItem)
+		gotItem := GetItemFromRiot(val)
+		theItem.IntoItems = append(theItem.IntoItems, *gotItem)
 	}
-	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
-	fmt.Printf("%##v \n ", theItem.Maps)
 	if theItem.Verify() == nil {
 		return theItem
 	}
 	return nil
+}
+
+func (theItem *Item) partialInit() *Item {
+	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
+	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
+	return theItem
+}
+
+func (theItem *Item) PrintSimple() {
+	theItem.Init()
+	Pretty(theItem)
+	for _, item := range theItem.FromItems {
+		Pretty(item)
+	}
+	for _, item := range theItem.IntoItems {
+		Pretty(item)
+	}
 }
 
 func (theItem *Item) Verify() error {
@@ -154,16 +168,11 @@ func initializeItemsSlice() {
 		allItemsMap[item.Id] = item
 	}
 	for _, item := range AllItems {
-		item.Init()
+		item.partialInit()
 	}
-	failedToVerify := []string {}
 	for _, item := range AllItems {
-		err := item.Verify()
-		if err != nil {
-			failedToVerify = append(failedToVerify, item.Name)
-		}
+		item.Verify()
 	}
-	fmt.Printf("%##v \n", failedToVerify)
 }
 
 func RandomItem(itemsToUse []Item) Item {
@@ -207,6 +216,18 @@ func GetItemByIdString(idString string) Item {
 	return item
 }
 
+func GetItemFromRiot(idString string) *Item {
+	gotItem := getResource(fmt.Sprintf(ITEMS_BY_ID, idString))
+	var item Item
+	jsonItem, err := json.Marshal(gotItem)
+	if err != nil {
+		panic(err)
+	}
+	json.Unmarshal(jsonItem, &item)
+	item.partialInit()
+	return &item
+}
+
 func FullItems() []Item {
 	filteredItems := []Item{}
 	for _, val := range AllItems {
@@ -220,7 +241,7 @@ func FullItems() []Item {
 func MapItems(theMap *Map) []Item {
 	filteredItems := []Item{}
 	for _, val := range AllItems {
-		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[theMap.MapId] {
+		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[strconv.Itoa(theMap.MapId)] {
 			filteredItems = append(filteredItems, val)
 		}
 	}
