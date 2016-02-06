@@ -10,29 +10,38 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-	"strconv"
+	"strings"
+	"net/url"
 )
 
 var s1 = InitTemplates()
 
 func main() {
+	start := time.Now()
+	lolapi.Init()
+	fmt.Printf("Total to init: %v", time.Since(start))
 	go func() {
 		for {
 			s1 = InitTemplates()
 			time.Sleep(time.Second * 2)
 		}
 	}()
-	lolapi.Init()
-	mux := mux.NewRouter()
-	mux.HandleFunc("/*", templateAttempt)
-	mux.HandleFunc("/build/{id:[0-9A-Za-z]+}", build)
-	mux.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/"))))
-	mux.HandleFunc("/items", allItems)
-	mux.HandleFunc("/items/", allItems)
-	mux.HandleFunc("/items/{id:[0-9]+}", itemById)
+	mux := mux.NewRouter().StrictSlash(true)
+	myMux := Router{
+		TheRouter: mux,
+	}
+	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(notFound)
+	myMux.Middle("/", templateAttempt).Name("Root")
+	myMux.Middle("/build/{id:[0-9A-Za-z]+}", build).Name("build")
+	myMux.TheRouter.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))).Name("static")
+	myMux.Middle("/items", allItems).Name("items")
+	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
 	http.Handle("/", mux)
-	http.ListenAndServe(":8000", nil)
+	err := http.ListenAndServe(":8000", nil)
+	if err != nil {
+		println(err.Error())
+	}
 }
 
 func templateAttempt(w http.ResponseWriter, r *http.Request) {
@@ -52,30 +61,22 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 		}
 		http.SetCookie(w, &cookie)
 	}
-
-	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems)-1)]
-
-	s1.ExecuteTemplate(w, "header", item)
-	build := lolapi.RandomBuild()
-	build.Init()
+	theMap := lolapi.AllMaps[0]
+	build := lolapi.RandomBraveryBuild(theMap)
+	s1.ExecuteTemplate(w, "header", build.Items[3])
 	s1.ExecuteTemplate(w, "build", build)
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
-	item := lolapi.AllItems[lolapi.RandomNumber(len(lolapi.AllItems)-1)]
-	s1.ExecuteTemplate(w, "header", item)
+	s1.ExecuteTemplate(w, "header", lolapi.RandomItem(nil))
 	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
 	s1.ExecuteTemplate(w, "footer", nil)
 }
 
 func itemById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		s1.ExecuteTemplate(w, "error", err)
-	}
-	item := lolapi.GetItemById(id)
+	item := lolapi.GetItemByIdString(vars["id"])
 	s1.ExecuteTemplate(w, "header", item)
 	s1.ExecuteTemplate(w, "item", item)
 	s1.ExecuteTemplate(w, "footer", nil)
@@ -83,7 +84,8 @@ func itemById(w http.ResponseWriter, r *http.Request) {
 
 func build(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	s1.ExecuteTemplate(w, "header", nil)
+	fmt.Printf("%##v", vars)
+	s1.ExecuteTemplate(w, "header", lolapi.RandomItem(nil))
 	build := lolapi.BuildFromLink(vars["buildLink"])
 	s1.ExecuteTemplate(w, "build", *build)
 	s1.ExecuteTemplate(w, "footer", nil)
@@ -102,4 +104,49 @@ func InitTemplates() *template.Template {
 		panic(err)
 	}
 	return s1
+}
+
+type RequestJson struct {
+	Method string
+	URL *url.URL
+	Proto string
+	Host string
+	Vars map[string]string
+}
+
+func notFound(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	requestProxy := &RequestJson{
+		Method:r.Method,
+		URL:r.URL,
+		Proto:r.Proto,
+		Host:r.Host,
+		Vars: vars,
+	}
+	fmt.Println(vars["host"])
+	s1.ExecuteTemplate(w, "header", nil)
+	s1.ExecuteTemplate(w, "404", lolapi.Pretty(requestProxy))
+	s1.ExecuteTemplate(w, "footer", nil)
+}
+
+func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter,r *http.Request) {
+		defer next (w, r)
+		if !strings.Contains(r.URL.Path, ".") {
+			route := mux.CurrentRoute(r)
+			if route != nil {
+				fmt.Println(route.GetName())
+			}
+		}
+	}
+
+}
+
+type Router struct {
+	TheRouter *mux.Router
+}
+
+func (r *Router) Middle(path string, f func(http.ResponseWriter,
+*http.Request)) *mux.Route {
+	return r.TheRouter.NewRoute().Path(path).HandlerFunc(process(f))
 }

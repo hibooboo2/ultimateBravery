@@ -1,8 +1,6 @@
 {{define "itemInBuild"}}
 <div class="ItemInBuild">
-    <a href="{{ .PermaLink }}">
-        <img class="itemSplash" src="{{ .Picture }}" alt="{{ .Name }}"/>
-    </a>
+    {{ template "itemSplash" . }}
     <div class="itemHover"> {{ template "item" . }} </div>
 </div>
 {{end}}

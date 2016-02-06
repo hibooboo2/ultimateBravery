@@ -10,17 +10,15 @@
 <div class="Build">
     <div>
     {{ template "champion" .Champion }}
-    {{ .Name }} </br>
-    <a href="{{ .PermaLink }}">PermaLink</a>
+    {{ .Name }}
+    </br>
+    <a href="{{ .PermLink }}">PermLink</a>
 
     </div>
-    <div>
-        {{ template "itemInBuild" .Item1 }}
-        {{ template "itemInBuild" .Item2 }}
-        {{ template "itemInBuild" .Item3 }}
-        {{ template "itemInBuild" .Item4 }}
-        {{ template "itemInBuild" .Item5 }}
-        {{ template "itemInBuild" .Item6 }}
+    <div class="itemsInBuild">
+        {{ range .Items }}
+            {{ template "item" . }}
+        {{ end }}
     </div>
 </div>
 

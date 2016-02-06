@@ -35,7 +35,7 @@ func RandomChampion() *Champion {
 
 }
 
-func InitializeChampionsSlice() {
+func initializeChampionsSlice() {
 	items := getResource(CHAMPIONS)
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
 	for _, value := range gotItems {

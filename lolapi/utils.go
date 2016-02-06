@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strconv"
 )
 
 type SummonerSpell struct {
@@ -42,8 +43,9 @@ func RandomNumber(max int) int {
 
 func Init() {
 	rand.Seed(time.Now().Unix())
-	InitializeChampionsSlice()
-	InitializeItemsSlice()
+	initializeChampionsSlice()
+	initializeItemsSlice()
+	initializeMaps()
 }
 
 func MakeLink(object interface{}) string {
@@ -60,13 +62,31 @@ func FromLink(object string, objectType interface{}) interface{} {
 
 	data, err := base64.StdEncoding.DecodeString(object)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Decode error:", err)
 		return nil
 	}
 	err = json.Unmarshal(data, objectType)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Unmarshal Error:", err)
 		return nil
 	}
+	fmt.Printf("%##v \n", objectType)
 	return objectType
+}
+
+func Pretty(object interface{}) string {
+	jsonObject, err := json.MarshalIndent(object, "", "    ")
+	if err == nil {
+		return string(jsonObject)
+	}
+	fmt.Println(err.Error())
+	return ""
+}
+
+func idStringToId(idString string) int {
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		panic(err.Error())
+	}
+	return id
 }

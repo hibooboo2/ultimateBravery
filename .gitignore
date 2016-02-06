@@ -9,6 +9,7 @@ ultimateBravery
 # Folders
 _obj
 _test
+_gopath
 
 # Architecture specific extensions/prefixes
 *.[568vq]

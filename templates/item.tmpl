@@ -1,19 +1,19 @@
 {{define "item"}}
 <div class="item">
-    <img class="itemSplash" src="http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/{{ .Image.Full }}"/>
+    {{ template "itemSplash" . }}
     {{ .SanitizedDescription }}
     <pre>
         Id:   {{ .Id }}
-        PermLink: {{ .PermaLink }}
-        Image Full:   {{ .Image.Full }}
         Name: {{ .Name }}
         Cost: {{ .Gold.Total }}
+        Map:  {{ .Map }}
+        {{ printf "%##v" . }}
     </pre>
     <div class="listItems">
         {{ if len .IntoItems }}
             Into:
             {{ range .IntoItems  }}
-                {{template "itemInBuild" .}}
+                {{template "itemSplash" .}}
             {{end}}
         {{end}}
     </div>
@@ -22,7 +22,7 @@
         {{ if len .FromItems }}
             From:
             {{ range .FromItems }}
-                {{ template "itemInBuild" . }}
+                {{ template "itemSplash" . }}
             {{end}}
         {{end}}
     </div>
