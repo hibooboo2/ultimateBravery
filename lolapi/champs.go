@@ -21,6 +21,11 @@ func (champ *Champion) getSkinPic(skinNumber int) string {
 	return fmt.Sprintf(CHAMPION_LOADING, champ.Key, skinNumber)
 }
 
+func (champ *Champion) CanUseItem(theItem *Item) bool {
+	//TODO: Implement this logic.
+	return true
+}
+
 type Champion struct {
 	Id    int
 	Key   string

@@ -63,7 +63,7 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 	theMap := lolapi.AllMaps[0]
-	build := lolapi.RandomBraveryBuild(theMap)
+	build := lolapi.RandomBraveryBuild(theMap, lolapi.RandomChampion())
 	s1.ExecuteTemplate(w, "build", build)
 }
 
@@ -88,7 +88,7 @@ func build(w http.ResponseWriter, r *http.Request) {
 
 func json(w http.ResponseWriter, r *http.Request) {
 	theMap := lolapi.AllMaps[0]
-	build := lolapi.RandomBraveryBuild(theMap)
+	build := lolapi.RandomBraveryBuild(theMap, lolapi.RandomChampion())
 	for _, item := range build.Items {
 		for _, item := range item.IntoItems {
 			item.IntoItems = nil

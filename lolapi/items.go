@@ -53,13 +53,20 @@ func (theItem *Item) CanUseOnMap(theMap *Map) bool {
 	return canUse
 }
 
-func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item) bool {
-	if theItem.CanUseOnMap(theMap) {
-		for _, otherItem := range otherItems {
-			if otherItem.Id == theItem.Id {
-				return false
-			}
+func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champion) bool {
+	if !theItem.CanUseOnMap(theMap) {
+		return false
+	}
+	for _, otherItem := range otherItems {
+		if otherItem.Id == theItem.Id {
+			return false
 		}
+	}
+	if theItem.CanUpgrade() || !theItem.IsAnUpgrade() {
+		return false
+	}
+	if !champ.CanUseItem(theItem) {
+		return false
 	}
 	return true
 }
@@ -202,24 +209,24 @@ func RandomItem(itemsToUse []*Item) *Item {
 	return itemsToUse[RandomNumber(len(itemsToUse)-1)]
 }
 
-func RandomItemFromMap(theMap *Map, otherItems []*Item) *Item {
+func RandomItemFromMap(theMap *Map, otherItems []*Item, champ * Champion) *Item {
 
 	item := AllItems[RandomNumber(len(AllItems)-1)]
-	for !item.CanUseInBuild(theMap, otherItems) {
+	for !item.CanUseInBuild(theMap, otherItems, champ) {
 		item = AllItems[RandomNumber(len(AllItems)-1)]
 	}
 	item.Init()
 	return item
 }
 
-func RandomItemsFromMap(howMany int, theMap *Map) []*Item {
+func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 	if theMap == nil {
 		theMap = RandomMap()
 	}
 	total := 0
 	items := []*Item {}
 	for total < 6 {
-		item := RandomItemFromMap(theMap, items)
+		item := RandomItemFromMap(theMap, items, champ)
 		items = append(items, item)
 		total++
 	}

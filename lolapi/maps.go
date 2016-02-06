@@ -25,7 +25,7 @@ func initializeMaps() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &aMap)
-		if aMap.MapId == 1 {
+		if aMap.MapId == 11 { //|| aMap.MapId == 12 || aMap.MapId == 8 {
 			AllMaps = append(AllMaps, &aMap)
 			allMapsMap[aMap.MapId] = &aMap
 		}

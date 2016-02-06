@@ -78,29 +78,26 @@ func (theBuild *LOLBuild) init() {
 
 func RandomBuild() LOLBuild {
 	theMap := RandomMap()
+	champ := RandomChampion()
 	build := LOLBuild{
 		Name:     RandomBuildName(),
-		Items: RandomItemsFromMap(6, theMap),
-		Champion: RandomChampion(),
+		Items: RandomItemsFromMap(6, theMap, champ),
+		Champion: champ,
 		Map: theMap,
 	}
 	build.init()
 	return build
 }
 
-func RandomBraveryBuild(theMap *Map) LOLBuild {
+func RandomBraveryBuild(theMap *Map, champ *Champion) LOLBuild {
 	build := LOLBuild{
 		Name:     RandomBuildName(),
-		Items: RandomItemsFromMap(6, theMap),
-		Champion: RandomChampion(),
+		Items: RandomItemsFromMap(6, theMap, champ),
+		Champion: champ,
 		Map: theMap,
 
 	}
 	build.init()
-	fmt.Printf("%##v", build)
-	for _, value := range build.Items {
-		fmt.Printf("%##v", value)
-	}
 	return build
 }
 
