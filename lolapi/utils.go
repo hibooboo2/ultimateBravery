@@ -47,6 +47,7 @@ func Init() {
 	rand.Seed(time.Now().Unix())
 	initializeChampionsSlice()
 	initializeItemsSlice()
+	initializeItemsFromDataSlice()
 	initializeMaps()
 }
 
@@ -88,7 +89,17 @@ func Pretty(object interface{}) string {
 func idStringToId(idString string) int {
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		panic(err.Error())
+		panic(idString + err.Error())
 	}
 	return id
+}
+
+func totalInBuild(items []*Item, group string) int {
+	total := 0
+	for _, value := range items {
+		if value.Group == group {
+			total++
+		}
+	}
+	return total
 }

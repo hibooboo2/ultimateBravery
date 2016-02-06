@@ -32,7 +32,9 @@ type LOLBuildLink struct {
 func (theLink *LOLBuildLink) getBuild() LOLBuild {
 	items := []*Item {}
 	for _, value := range theLink.Items {
-		items = append(items, GetItemById(value))
+		item := GetItemById(value)
+		item.Init()
+		items = append(items, item)
 	}
 	build := LOLBuild{
 		Name:     theLink.Name,
@@ -68,9 +70,7 @@ func (theBuild *LOLBuild) TotalCost() int {
 func (theBuild *LOLBuild) init() {
 	theBuild.Name = theBuild.Name + " " + theBuild.Champion.Name
 	for _, val := range theBuild.Items {
-		if  val.FromItems == nil {
 			val.Init()
-		}
 	}
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)

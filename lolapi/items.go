@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 var AllItems = []*Item{}
@@ -34,6 +35,8 @@ type Item struct {
 	PermLink             string
 	Maps                 map[string]bool
 	Group               string
+	RequiredChampion    string
+	HideFromAll         bool
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -54,11 +57,37 @@ func (theItem *Item) CanUseOnMap(theMap *Map) bool {
 }
 
 func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champion) bool {
+	if theItem.HideFromAll {
+		return false
+	}
+	if theItem.Group == "FlaskGroup" || theItem.Group == "JungleItems" {
+		return false
+	}
+	if strings.Contains(theItem.Group, "Boots") {
+		for _, otherItem := range otherItems {
+			if strings.Contains(otherItem.Group, "Boots") {
+				return false
+			}
+		}
+	}
 	if !theItem.CanUseOnMap(theMap) {
 		return false
 	}
 	for _, otherItem := range otherItems {
 		if otherItem.Id == theItem.Id {
+			return false
+		}
+	}
+	if theItem.Group != "" {
+		totalCanHave := 0
+		for _, group := range theItemData.Groups {
+			if theItem.Group == group.Id {
+				if group.MaxGroupOwnable != "-1" && group.MaxGroupOwnable != "" {
+					totalCanHave = idStringToId(group.MaxGroupOwnable)
+				}
+			}
+		}
+		if totalCanHave >= 1 && totalInBuild(otherItems, theItem.Group) + 1 > totalCanHave {
 			return false
 		}
 	}

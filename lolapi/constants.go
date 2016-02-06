@@ -4,6 +4,7 @@ import "os"
 
 const REALMS = `https://global.api.pvp.net/api/lol/static-data/na/v1.2/realm?`
 const ITEMS = `https://global.api.pvp.net/api/lol/static-data/na/v1.2/item?itemListData=all&`
+const ITEMS_JSON = `http://ddragon.leagueoflegends.com/cdn/6.2.1/data/en_US/item.json?`
 const ITEMS_BY_ID = `https://global.api.pvp.net/api/lol/static-data/na/v1.2/item/%v?itemData=all&`
 const ITEM_PICTURE = `http://ddragon.leagueoflegends.com/cdn/6.2.1/img/item/`
 const CHAMPIONS = `https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion?champData=all&`

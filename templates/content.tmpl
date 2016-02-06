@@ -2,7 +2,7 @@
     <h1>Items ({{ len . }} total)</h1>
     <div class="allItems">
         {{ range . }}
-                {{ template "itemInBuild" . }}
+                {{ template "item" . }}
         {{end}}
     </div>
 {{end}}

@@ -23,6 +23,9 @@ func (champ *Champion) getSkinPic(skinNumber int) string {
 
 func (champ *Champion) CanUseItem(theItem *Item) bool {
 	//TODO: Implement this logic.
+	if theItem.RequiredChampion != "" && theItem.RequiredChampion != champ.Name {
+		return false
+	}
 	return true
 }
 
