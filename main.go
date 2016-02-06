@@ -33,8 +33,9 @@ func main() {
 	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(process(notFound))
 	myMux.Middle("/", templateAttempt).Name("Root")
 	myMux.Middle("/build/{id:[0-9A-Za-z]+}", build).Name("build")
-	myMux.TheRouter.PathPrefix("/static/").Handler(
-		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))).Name("static")
+	staticFiles := http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))
+	myMux.TheRouter.PathPrefix("/static/").Handler(staticFiles).Name("static")
+	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
 	myMux.Middle("/items", allItems).Name("items")
 	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
 	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
