@@ -25,8 +25,10 @@ func initializeMaps() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &aMap)
-		AllMaps = append(AllMaps, &aMap)
-		allMapsMap[aMap.MapId] = &aMap
+		if aMap.MapId == 1 {
+			AllMaps = append(AllMaps, &aMap)
+			allMapsMap[aMap.MapId] = &aMap
+		}
 	}
 	for _, val := range AllMaps {
 		val.Init()

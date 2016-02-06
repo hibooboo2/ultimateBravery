@@ -37,6 +37,7 @@ func main() {
 		http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))).Name("static")
 	myMux.Middle("/items", allItems).Name("items")
 	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
+	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
 	http.Handle("/", mux)
 	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
@@ -85,6 +86,22 @@ func build(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func json(w http.ResponseWriter, r *http.Request) {
+	theMap := lolapi.AllMaps[0]
+	build := lolapi.RandomBraveryBuild(theMap)
+	for _, item := range build.Items {
+		for _, item := range item.IntoItems {
+			item.IntoItems = nil
+			item.FromItems = nil
+		}
+		for _, item := range item.FromItems {
+			item.FromItems = nil
+			item.IntoItems = nil
+		}
+	}
+	s1.ExecuteTemplate(w, "raw", lolapi.Pretty(build))
+}
+
 func InitTemplates() *template.Template {
 	files, _ := ioutil.ReadDir("./templates")
 	fileNames := []string{}
@@ -131,6 +148,7 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		s1.ExecuteTemplate(w, "header", nil)
 		next (w, r)
 		s1.ExecuteTemplate(w, "footer", nil)
+		r.Body.Close()
 	}
 
 }
