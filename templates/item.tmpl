@@ -1,13 +1,16 @@
 {{define "item"}}
 <div class="item">
     {{ template "itemSplash" . }}
-    {{ .SanitizedDescription }}
-    <pre>
+    <div class="description scroll">
+    <p>{{ .SanitizedDescription }}</p>
+    <pre class="">
+
         Id           : {{ .Id }}
         Name         : {{ .Name }}
         Cost (Base)  : {{ .Gold.Base }}
         Cost (Total) : {{ .Gold.Total }}
     </pre>
+    </div>
     <div    class="bottom">
         {{ if len .IntoItems }}
             <div class="itemList">

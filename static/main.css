@@ -1,17 +1,16 @@
+@import "grid.css";
+
 .itemList{
-    display: inline-flex;
-    flex-wrap: wrap;
-    width: 40em;
+    @include row
     height: 8em;
     border:  0.3em dashed darkslategray;
 }
 
-.scrollList {
-    display: inline-flex;
-    flex-wrap: wrap;
+.scroll {
     overflow: scroll;
+    border: royalblue ridge 2px;
 }
-.scrollList::-webkit-scrollbar {
+.scroll::-webkit-scrollbar {
     display: none;
 }
 .ItemInBuild {
@@ -57,11 +56,16 @@
     height: 30em;
     border: darkseagreen 0.1em solid;
     position: fixed;
-    top: 5em;
+    top: 0em;
     left: 43em;
     z-index: 1;
 }
 
+.description {
+    width: 40em;
+    height: 10em;
+    overflow: scroll;
+}
 .ItemInBuild:hover .hiddenItem {
     visibility: visible;
     display: inline;
@@ -98,8 +102,4 @@ footer {
     position: relative;
     bottom: 0px;
     border: cornflowerblue 0.4em dashed;
-}
-
-div:hover {
-    border: lime 0.4em ridge;
 }
