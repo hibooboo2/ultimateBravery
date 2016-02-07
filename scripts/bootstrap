@@ -4,6 +4,6 @@ set -ex
 
 cd $(dirname $0)/..
 
-export GOPATH=$(pwd)/Godeps/_workspace
+export GOPATH=$(pwd)/Godeps/_workspace:$(pwd)/gopath
 mkdir -p $(pwd)/Godeps/_workspace/src/github.com/hibooboo2/
-ln -s $(pwd) $(pwd)/Godeps/_workspace/src/github.com/hibooboo2/ultimateBravery
+ln -s /ultimateBravery $(pwd)/Godeps/_workspace/src/github.com/hibooboo2/
