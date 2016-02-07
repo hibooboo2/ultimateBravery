@@ -108,3 +108,8 @@ func totalInBuild(items []*Item, group string) int {
 	}
 	return total
 }
+
+
+type ReaderWriter struct{
+	data []byte
+}

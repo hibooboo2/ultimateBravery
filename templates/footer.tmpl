@@ -1,7 +1,22 @@
 {{define "footer"}}
-<footer>
+</div>
+<footer class="delayShow row">
+    <div class="col-1-2">
     Created with love by <a href="https://github.com/hibooboo2/" > @hibooboo2 </a>
+    </div>
+    <div class="col-1-2">
+        {{ if .Dev }}
+        <a href="/?dev=false"><button>Im a not dev</button></a>
+        {{ else }}
+        <a href="/?dev=true"><button>Im a dev</button></a>
+        {{ end }}
+    </div>
 </footer>
+<style>
+    .delayShow {
+        display: inherit;
+    }
+</style>
 </body>
 </html>
 {{end}}

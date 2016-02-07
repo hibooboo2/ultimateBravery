@@ -126,11 +126,11 @@ body {
   text-align: left; }
 
 html {
-  color: white;
+  color: black;
   background: linear-gradient(to right, red, yellow);
   text-align: center; }
 
 .allcontent {
   background: linear-gradient(to right, red, yellow); }
 
-/*# sourceMappingURL=main.css.map */
+/*# sourceMappingURL=normal-main.css.map */

@@ -21,7 +21,7 @@ func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	start := time.Now()
 	lolapi.Init()
-	logrus.Debugf("Total to init: %v", time.Since(start))
+	logrus.Debugf("Total to init: %v \n", time.Since(start))
 	go func() {
 		for {
 			s1 = InitTemplates()
@@ -67,9 +67,11 @@ func generateBuildAndStore(w http.ResponseWriter, r *http.Request) {
 		}
 		http.SetCookie(w, &cookie)
 	}
-	theMap := lolapi.AllMaps[0]
-	build := lolapi.RandomBraveryBuild(theMap, lolapi.RandomChampion())
-	s1.ExecuteTemplate(w, "build", build)
+	for x := 0; x < 1; x++ {
+		s1.ExecuteTemplate(w, "build", lolapi.RandomBraveryBuild(lolapi.RandomMap(), lolapi.RandomChampion()))
+	}
+	//s1.ExecuteTemplate(w, "items", lolapi.AllItems)
+	//s1.ExecuteTemplate(w, "champs", lolapi.AllChampions)
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
@@ -153,19 +155,58 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
-		defer s1.ExecuteTemplate(w, "footer", nil)
+		var thePage PageInfo
+		defer s1.ExecuteTemplate(w, "footer", &thePage)
 		defer r.Body.Close()
+		cookie, err := r.Cookie("IS_DEV")
+		logrus.Debugf("%#v %v", cookie, err)
+		dev := false
+		if err != http.ErrNoCookie && cookie.Value == "true" {
+			dev = true
+		}
+		query := r.URL.Query()
+		val, ok := query["dev"]
+		logrus.Debugf("Query : %v", query)
+		if ok && val[0] == "true" {
+			cookie := http.Cookie{
+				Name:    "IS_DEV",
+				Value:   "true",
+				Path:    "/",
+				Expires: time.Now().Add(time.Second * 3600 * 24),
+			}
+			http.SetCookie(w, &cookie)
+			dev = true
+		} else if ok && val[0] == "false" {
+			cookie := http.Cookie{
+				Name:    "IS_DEV",
+				Value:   "",
+				Path:    "/",
+				Expires: time.Now().Add(time.Second * 3600 * 24),
+			}
+			http.SetCookie(w, &cookie)
+			dev = false
+		}
+		routeName := "Home Page"
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
 			if route != nil {
 				logrus.Debugf("Route: %v %v",route.GetName(), mux.Vars(r))
+				routeName = route.GetName()
 			}
 		}
-		s1.ExecuteTemplate(w, "header", nil)
+		thePage = PageInfo{Dev:dev, Name:routeName}
+		s1.ExecuteTemplate(w, "header", &thePage)
+
 		next (w, r)
 
 	}
 
+}
+
+type PageInfo struct {
+	Dev bool
+	Name string
+	Dark bool
 }
 
 type Router struct {

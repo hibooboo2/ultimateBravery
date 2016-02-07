@@ -1,5 +1,9 @@
-$splash-size: 4em
-$bg: linear-gradient(to right, #5b0099, black)
+@import "grid"
+
+$splash-size: 4em !default
+$bg: linear-gradient(to right, #5b0099, black) !default
+$bg_primary :  linear-gradient(to right,red, yellow) !default
+$font_color : white !default
 
 .list
     display: flex
@@ -71,6 +75,7 @@ $bg: linear-gradient(to right, #5b0099, black)
     position: absolute
     bottom: 15vh
     left: 2vh
+    background: $bg_primary
 
 .itemviewer
     @extend .item
@@ -109,3 +114,17 @@ button
     background:  #A8A8CC
     height: 100%
 
+body
+    flex-wrap: wrap
+    min-width: 1280px
+    margin: auto
+    border: black 4px ridge
+    text-align: left
+
+html
+    color: $font_color
+    background: $bg_primary
+    text-align: center
+
+.allcontent
+    background: $bg_primary

@@ -3,14 +3,13 @@
     <div>
     {{ template "splash" . }}
     <div class="description scroll">
-    <p>{{ .SanitizedDescription }}</p>
     <pre class="">
-
-        Id           : {{ .Id }}
         Name         : {{ .Name }}
         Cost (Base)  : {{ .Gold.Base }}
         Cost (Total) : {{ .Gold.Total }}
+        Depth        : {{ .Depth }}
     </pre>
+    <p>{{ .SanitizedDescription }}</p>
     </div>
     </div>
     <div class="half">

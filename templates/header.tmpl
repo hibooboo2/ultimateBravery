@@ -2,13 +2,28 @@
 <html>
 <head>
     <link rel='shortcut icon' href="/static/favicon.ico" type='image/x-icon' />
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <!--<meta http-equiv="refresh" content="5">-->
+    {{ if .Dev }}
+    <meta http-equiv="refresh" content="60">
+    <link rel="stylesheet" type="text/css" href="/static/css/dev.css">
+    {{ else }}
+        {{ if .Dark }}
+        <link rel="stylesheet" type="text/css" href="/static/css/dark-main.css">
+        {{ else }}
+        <link rel="stylesheet" type="text/css" href="/static/css/normal-main.css">
+        {{ end }}
+    {{ end }}
     <meta name="viewport" content="width=device-width" >
     <title>{{ .Name }}</title>
+    <style>
+        .delayShow {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<header>
+<header class="delayShow">
     <a href="/"><button>Home</button></a><a href="/items"><button>Items</button></a><a href="/champion"><button>Champions</button></a>
+
 </header>
+<div class="delayShow allcontent">
 {{end}}
