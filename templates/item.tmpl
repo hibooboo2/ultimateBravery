@@ -1,6 +1,6 @@
 {{define "item"}}
 <div class="item">
-    {{ template "itemSplash" . }}
+    {{ template "splash" . }}
     <div class="description scroll">
     <p>{{ .SanitizedDescription }}</p>
     <pre class="">
@@ -11,20 +11,20 @@
         Cost (Total) : {{ .Gold.Total }}
     </pre>
     </div>
-    <div    class="bottom">
+    <div    class="bottom row">
         {{ if len .IntoItems }}
-            <div class="itemList">
+            <div class="splashList">
                 Into:
                 {{ range .IntoItems  }}
-                    {{template "itemSplash" .}}
+                    {{template "splash" .}}
                 {{end}}
             </div>
         {{end}}
         {{ if len .FromItems }}
-            <div class="itemList">
+            <div class="splashList">
                 From:
                 {{ range .FromItems }}
-                    {{ template "itemSplash" . }}
+                    {{ template "splash" . }}
                 {{end}}
             </div>
         {{end}}

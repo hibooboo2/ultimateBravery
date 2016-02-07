@@ -10,6 +10,7 @@ ultimateBravery
 _obj
 _test
 _gopath
+.sass-cache
 
 # Architecture specific extensions/prefixes
 *.[568vq]

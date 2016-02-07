@@ -38,9 +38,11 @@ func main() {
 	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
 	myMux.Middle("/items", allItems).Name("items")
 	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
+	myMux.Middle("/champion", allChamps).Name("Champs")
+	myMux.Middle("/champions/{id:[0-9]+}", champById).Name("ChampById")
 	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
 	http.Handle("/", mux)
-	err := http.ListenAndServe(":80", nil)
+	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		println(err.Error())
 	}
@@ -69,7 +71,7 @@ func templateAttempt(w http.ResponseWriter, r *http.Request) {
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
-	s1.ExecuteTemplate(w, "content", lolapi.AllItems)
+	s1.ExecuteTemplate(w, "items", lolapi.AllItems)
 }
 
 func itemById(w http.ResponseWriter, r *http.Request) {
@@ -77,6 +79,16 @@ func itemById(w http.ResponseWriter, r *http.Request) {
 	item := lolapi.GetItemByIdString(vars["id"])
 	item.Init()
 	s1.ExecuteTemplate(w, "item", item)
+}
+
+func allChamps(w http.ResponseWriter, r *http.Request) {
+	s1.ExecuteTemplate(w, "champs", lolapi.AllChampions)
+}
+
+func champById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	item := lolapi.GetChampionByIdString(vars["id"])
+	s1.ExecuteTemplate(w, "champion", item)
 }
 
 func build(w http.ResponseWriter, r *http.Request) {
@@ -140,6 +152,7 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
+		defer s1.ExecuteTemplate(w, "footer", nil)
 		defer r.Body.Close()
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
@@ -149,7 +162,7 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		}
 		s1.ExecuteTemplate(w, "header", nil)
 		next (w, r)
-		s1.ExecuteTemplate(w, "footer", nil)
+
 	}
 
 }

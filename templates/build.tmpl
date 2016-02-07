@@ -1,11 +1,11 @@
 {{ define "build" }}
 <div class="build">
-    {{ template "champion" .Champion }}
+    {{ template "splash" .Champion }}
     {{ template "map" .Map }}
     {{ .Name }}
     </br>
     <a href="{{ .PermLink }}">PermLink</a>
-    <div class="itemList bottom">
+    <div class="splashList">
         {{ range .Items }}
             {{ template "itemInBuild" . }}
         {{ end }}

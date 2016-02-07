@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-var AllChampions = []Champion{}
+var AllChampions = []*Champion{}
 var allChampsMap = make(map[int]*Champion)
 
 type Skin struct {
@@ -29,6 +29,12 @@ func (champ *Champion) CanUseItem(theItem *Item) bool {
 	return true
 }
 
+func (champ *Champion) init() *Champion {
+	champ.Picture = CHAMPION_PICTURE + champ.Image.Full
+	champ.PermLink = fmt.Sprintf("/champions/%v", champ.Id)
+	return champ
+}
+
 type Champion struct {
 	Id    int
 	Key   string
@@ -36,10 +42,12 @@ type Champion struct {
 	Title string
 	Image Image
 	Skins []Skin
+	Picture string
+	PermLink string
 }
 
 func RandomChampion() *Champion {
-	return &AllChampions[RandomNumber(len(AllChampions)-1)]
+	return AllChampions[RandomNumber(len(AllChampions)-1)]
 
 }
 
@@ -53,11 +61,18 @@ func initializeChampionsSlice() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &champ)
-		AllChampions = append(AllChampions, champ)
+		champ.init()
+		AllChampions = append(AllChampions, &champ)
 		allChampsMap[champ.Id] = &champ
 	}
 }
 
 func GetChampionById(id int) *Champion {
-	return allChampsMap[id]
+	champ := allChampsMap[id]
+	champ.init()
+	return champ
+}
+
+func GetChampionByIdString(id string) *Champion {
+	return GetChampionById(idStringToId(id))
 }

@@ -74,6 +74,7 @@ func (theBuild *LOLBuild) init() {
 	}
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)
+	theBuild.Champion.init()
 }
 
 func RandomBuild() LOLBuild {

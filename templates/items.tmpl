@@ -1,6 +1,6 @@
-{{define "content"}}
+{{define "items"}}
     <h1>Items ({{ len . }} total)</h1>
-    <div class="itemList scroll">
+    <div class="splashList">
         {{ range . }}
                 {{ template "itemInBuild" . }}
         {{end}}
