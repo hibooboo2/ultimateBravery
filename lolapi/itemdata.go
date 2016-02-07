@@ -2,7 +2,6 @@ package lolapi
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type Group struct {
@@ -14,7 +13,7 @@ type ItemData struct {
 	Type string
 	Version string
 	Basic  map[string]interface{}
-	Data   map[string]Item
+	//Data   map[string]Item
 	Groups []Group
 }
 
@@ -27,16 +26,16 @@ func initializeItemsFromDataSlice() {
 		panic(err)
 	}
 	json.Unmarshal(jsonItem, &theItemData)
-	for _, item := range theItemData.Data {
-		item.Init()
-	}
-	errs := []error{}
-	for _, item := range theItemData.Data {
-		err := item.Verify()
-		if err != nil {
-			errs = append(errs, err)
-		}
-	}
-	fmt.Printf("%v", theItemData.Groups)
+	//for _, item := range theItemData.Data {
+	//	item.Init()
+	//}
+	//errs := []error{}
+	//for _, item := range theItemData.Data {
+	//	err := item.Verify()
+	//	if err != nil {
+	//		errs = append(errs, err)
+	//	}
+	//}
+	//fmt.Printf("%v", theItemData.Groups)
 }
 

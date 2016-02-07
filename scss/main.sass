@@ -1,13 +1,13 @@
-@import "grid.scss"
-
 $splash-size: 40px
 
 .list
-    @extend .row
+    display: flex
+    flex-flow: row wrap
+    margin: 0 -5px 0 -5px 5px
 
 .splashList
     @extend .scrollList
-    height: $splash-size * 8
+    height: $splash-size * 24
 
 .scroll
     overflow: scroll
@@ -23,6 +23,9 @@ $splash-size: 40px
 .buildItemContainer
     @extend .splashContainer
 
+.splashContainer
+    height: $splash-size
+    width: $splash-size
 
 .build 
     width: 40em
@@ -78,4 +81,5 @@ footer
     width: 100%
     height: 60px
     font-size: 1em
+    background: white
 

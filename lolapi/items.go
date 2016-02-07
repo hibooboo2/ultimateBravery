@@ -8,6 +8,7 @@ import (
 
 var AllItems = []*Item{}
 var allItemsMap = make(map[int]*Item)
+var idsToIgnore = make(map[int]int)
 
 type Gold struct {
 	Base        int
@@ -36,6 +37,7 @@ type Item struct {
 	Group               string
 	RequiredChampion    string
 	HideFromAll         bool
+	initialized         bool
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -120,21 +122,48 @@ func (theItem *Item) IsAnUpgrade() bool {
 }
 
 func (theItem *Item) Init() *Item {
-	theItem.partialInit()
+	if theItem == nil {
+		panic("A nil Item.")
+	}
+	if theItem.initialized {
+		return theItem
+	}
+	if theItem.partialInit() == nil {
+		return nil
+	}
 	if  len(theItem.FromItems) == 0 {
 		theItem.FromItems = []*Item {}
 		for _, val := range theItem.From {
-			gotItem := GetItemByIdString(val)
-			theItem.FromItems = append(theItem.FromItems, gotItem)
+			id := idStringToId(val)
+			gotItem := GetItemById(id)
+			if gotItem == DEFAULT_ITEM {
+				gotItem = GetItemFromRiot(val)
+			}
+			gotItem = gotItem.partialInit()
+			if gotItem != nil {
+				theItem.FromItems = append(theItem.FromItems, gotItem)
+			} else {
+				idsToIgnore[id] = id
+			}
 		}
 		theItem.IntoItems = []*Item {}
 		for _, val := range theItem.Into {
-			gotItem := GetItemByIdString(val)
-			theItem.IntoItems = append(theItem.IntoItems, gotItem)
+			id := idStringToId(val)
+			gotItem := GetItemById(id)
+			if gotItem == DEFAULT_ITEM {
+				gotItem = GetItemFromRiot(val)
+			}
+			gotItem.partialInit()
+			if gotItem != nil {
+				theItem.IntoItems = append(theItem.IntoItems, gotItem)
+			} else {
+				idsToIgnore[id] = id
+			}
 		}
 
 	}
 	if theItem.Verify() == nil {
+		theItem.initialized = true
 		return theItem
 	}
 	return nil
@@ -142,13 +171,8 @@ func (theItem *Item) Init() *Item {
 
 func (theItem *Item) partialInit() *Item {
 	if theItem == nil {
-		return &Item{
-			Name: "Item non existent",
-			Id: -111,
-			Image: Image{
-				Full: "3751.png",
-			},
-		}
+		fmt.Println("Failed a partial Init")
+		return nil
 	}
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
 	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
@@ -166,37 +190,19 @@ func (theItem *Item) PrintSimple() {
 	}
 }
 
+var NIL_ITEM = fmt.Errorf("No Item Got Nil Pointer.")
+
 func (theItem *Item) Verify() error {
 	if theItem == nil {
-		return fmt.Errorf("No Item Got Nil Pointer.")
+		return NIL_ITEM
 	}
-	if len(theItem.Into) > 0 {
-		for _, idString := range theItem.Into {
-			matched := false
-			for _, item := range theItem.IntoItems {
-				if item != nil && item.Id == idStringToId(idString) {
-					matched = true
-					break
-				}
-			}
-			if !matched {
-				return fmt.Errorf("Id for items don't match. ITEM: %##v", theItem)
-			}
-		}
+	err := checkItems(theItem, theItem.Into, theItem.IntoItems)
+	if err != nil {
+		return err
 	}
-	if len(theItem.From) > 0 {
-		for _, idString := range theItem.From {
-			matched := false
-			for _, item := range theItem.FromItems {
-				if item != nil && item.Id == idStringToId(idString) {
-					matched = true
-					break
-				}
-			}
-			if !matched {
-				return fmt.Errorf("Id for items don't match. ITEM: %##v", theItem)
-			}
-		}
+	err = checkItems(theItem, theItem.From, theItem.FromItems)
+	if err != nil {
+		return err
 	}
 	if theItem.PermLink == "" {
 		return fmt.Errorf("No PermLink. Item: %v", theItem.Name)
@@ -204,6 +210,32 @@ func (theItem *Item) Verify() error {
 	return nil
 }
 
+func checkItems(theItem *Item, idStrings []string, items []*Item) error{
+	if len(idStrings) > 0 {
+		for _, idString := range idStrings {
+			matched := false
+			hasItem := false
+			_, exists := idsToIgnore[idStringToId(idString)]
+			if exists {
+				break
+			}
+			for _, item := range items {
+				fmt.Println(idString," ", strconv.Itoa(item.Id))
+				if item != nil {
+					hasItem = true
+					if strconv.Itoa(item.Id) == idString {
+						matched = true
+						break
+					}
+				}
+			}
+			if hasItem && !matched {
+				return fmt.Errorf("Id for items don't match. ITEM: %v %v \n\n %#v", theItem.Name, theItem.Id, items)
+			}
+		}
+	}
+	return nil
+}
 func initializeItemsSlice() {
 	items := getResource(ITEMS)
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
@@ -214,20 +246,23 @@ func initializeItemsSlice() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &item)
+		//itemGot := GetItemFromRiot(strconv.Itoa(item.Id))
 		AllItems = append(AllItems, &item)
 		allItemsMap[item.Id] = &item
 	}
 	for _, item := range AllItems {
 		item.Init()
-	}
-	errs := []error{}
-	for _, item := range AllItems {
 		err := item.Verify()
-		if err != nil {
-			errs = append(errs, err)
+		if err == nil {
+			allItemsMap[item.Id] = item
+		} else {
+			panic(err)
 		}
 	}
-	fmt.Printf("%#v \n", errs)
+	AllItems = []*Item{}
+	for _, item := range allItemsMap {
+		AllItems = append(AllItems, item)
+	}
 }
 
 func RandomItem(itemsToUse []*Item) *Item {
@@ -262,26 +297,36 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 }
 
 func GetItemById(id int) *Item {
-	item := allItemsMap[id]
-	item.partialInit()
-	return item
+	item, keyExists := allItemsMap[id]
+	if keyExists {
+		return item.partialInit()
+	}
+	return DEFAULT_ITEM
 }
 
+var DEFAULT_ITEM  = &Item{
+	Name: "404",
+	PermLink: "/items/9999",
+	Id: 9999,
+}
 func GetItemByIdString(idString string) *Item {
-	item := allItemsMap[idStringToId(idString)]
-	item.partialInit()
-	return item
+	return GetItemById(idStringToId(idString))
 }
 
 func GetItemFromRiot(idString string) *Item {
 	gotItem := getResource(fmt.Sprintf(ITEMS_BY_ID, idString))
+	if gotItem == nil {
+		id := idStringToId(idString)
+		idsToIgnore[id] = id
+		return nil
+	}
 	var item Item
 	jsonItem, err := json.Marshal(gotItem)
 	if err != nil {
 		panic(err)
 	}
 	json.Unmarshal(jsonItem, &item)
-	item.partialInit()
+	gotItem = item.partialInit()
 	return &item
 }
 
