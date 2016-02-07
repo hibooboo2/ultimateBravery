@@ -2,7 +2,10 @@
 <div class="build">
     {{ template "splash" .Champion }}
     {{ template "map" .Map }}
-    {{ .Name }}
+    <div>
+    <div>{{ .Name }}</div>
+    <div>{{ .Champion.Name }}</div>
+    </div>
     </br>
     <a href="{{ .PermLink }}">PermLink</a>
     <div class="splashList">

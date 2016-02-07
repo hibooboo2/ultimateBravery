@@ -290,6 +290,10 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 	}
 	total := 0
 	items := []*Item {}
+	gotBoots := false
+	for !gotBoots {
+		item
+	}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items, champ)
 		items = append(items, item)

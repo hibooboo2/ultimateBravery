@@ -15,7 +15,10 @@ import (
 type SummonerSpell struct {
 }
 
+var TotalResourceCalls = 0
+
 func getResource(resourceUrl string) interface{} {
+	TotalResourceCalls = TotalResourceCalls + 1
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
@@ -43,6 +46,9 @@ func RandomNumber(max int) int {
 }
 
 func Init() {
+	defer func (){
+		logrus.Debugf("Made %#v requests to riot.", TotalResourceCalls)
+	}()
 	rand.Seed(time.Now().Unix())
 	initializeChampionsSlice()
 	initializeItemsSlice()
@@ -56,13 +62,13 @@ func MakeLink(object interface{}) string {
 		println("Failed to make a link.")
 		return ""
 	}
-	str := base64.StdEncoding.EncodeToString(data)
+	str := base64.URLEncoding.EncodeToString(data)
 	return str
 }
 
 func FromLink(object string, objectType interface{}) interface{} {
 
-	data, err := base64.StdEncoding.DecodeString(object)
+	data, err := base64.URLEncoding.DecodeString(object)
 	if err != nil {
 		logrus.Println("Decode error:", err)
 		return nil

@@ -1,5 +1,6 @@
 {{define "item"}}
 <div class="item">
+    <div>
     {{ template "splash" . }}
     <div class="description scroll">
     <p>{{ .SanitizedDescription }}</p>
@@ -11,7 +12,8 @@
         Cost (Total) : {{ .Gold.Total }}
     </pre>
     </div>
-    <div>
+    </div>
+    <div class="half">
         {{ if len .IntoItems }}
             <div class="splashList">
                 Into:

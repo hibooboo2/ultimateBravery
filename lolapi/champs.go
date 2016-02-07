@@ -3,6 +3,7 @@ package lolapi
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Sirupsen/logrus"
 )
 
 var AllChampions = []*Champion{}
@@ -65,6 +66,7 @@ func initializeChampionsSlice() {
 		AllChampions = append(AllChampions, &champ)
 		allChampsMap[champ.Id] = &champ
 	}
+	logrus.Debugf("Total champions: %v", len(AllChampions))
 }
 
 func GetChampionById(id int) *Champion {

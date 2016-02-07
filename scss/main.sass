@@ -1,4 +1,5 @@
 $splash-size: 4em
+$bg: linear-gradient(to right, #5b0099, black)
 
 .list
     display: flex
@@ -19,6 +20,7 @@ $splash-size: 4em
 
 .scroll::-webkit-scrollbar
     display: none
+    overflow-y: scroll
 
 .scrollList
     @extend .scroll
@@ -32,7 +34,7 @@ $splash-size: 4em
     height: $splash-size
     width: $splash-size
 
-.build 
+.build
     width: 40em
     height: 20em
 
@@ -42,7 +44,7 @@ $splash-size: 4em
     width: $splash-size
 
 
-.splash 
+.splash
     border-radius: 100%
     height: $splash-size
     width: $splash-size
@@ -59,22 +61,22 @@ $splash-size: 4em
     @extend .hidden
     @extend .item
 
-.item 
+.item
     width: $splash-size * 10
-    height: $splash-size * 5
-    border: solid crimson 2px
-    -webkit-transition-delay: 4s
+    height: $splash-size * 5.5
+    border: ridge black 2px
+    border-radius: 3%
 
 .displayBox
     position: absolute
-    bottom: 10vh
+    bottom: 15vh
     left: 2vh
 
 .itemviewer
     @extend .item
     @extend .displayBox
 
-.description 
+.description
     width: 40em
     height: 10em
     overflow: scroll
@@ -82,17 +84,28 @@ $splash-size: 4em
 .buildItemContainer:hover .hidden
     visibility: visible
     display: inline
-    -webkit-transition-delay: 4s
 
-
-
-.champion 
+.champion
     border: orangered 0.1em solid
 
-footer 
+.champList
+    @extend .splashList
+    height: $splash-size * 4
+
+footer
     position: fixed
     bottom: 0px
     width: 100%
     height: 5em
     font-size: 1em
-    background: white
+    background: $bg
+
+header
+    width: 100%
+    height: $splash-size
+    background: $bg
+
+button
+    background:  #A8A8CC
+    height: 100%
+

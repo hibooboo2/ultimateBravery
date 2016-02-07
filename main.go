@@ -33,8 +33,8 @@ func main() {
 		TheRouter: mux,
 	}
 	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(process(notFound))
-	myMux.Middle("/", templateAttempt).Name("Root")
-	myMux.Middle("/build/{id:[0-9A-Za-z]+}", build).Name("build")
+	myMux.Middle("/", generateBuildAndStore).Name("Root")
+	myMux.Middle("/build/{buildLink}", build).Name("build")
 	staticFiles := http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))
 	myMux.TheRouter.PathPrefix("/static/").Handler(staticFiles).Name("static")
 	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
@@ -50,7 +50,7 @@ func main() {
 	}
 }
 
-func templateAttempt(w http.ResponseWriter, r *http.Request) {
+func generateBuildAndStore(w http.ResponseWriter, r *http.Request) {
 	session, err := uuid.NewV4()
 	if err != nil {
 		w.WriteHeader(503)

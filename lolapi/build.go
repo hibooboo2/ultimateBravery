@@ -72,7 +72,6 @@ func (theBuild *LOLBuild) TotalCost() int {
 }
 
 func (theBuild *LOLBuild) init() {
-	theBuild.Name = theBuild.Name + " " + theBuild.Champion.Name
 	for _, val := range theBuild.Items {
 			val.Init()
 	}

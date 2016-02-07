@@ -1,21 +1,22 @@
-.list, .scrollList, .splashList, .allList {
+.list, .scrollList, .splashList, .allList, .champList {
   display: flex;
   flex-flow: row wrap;
   margin: 0 -5px 0 -5px 5px; }
 
-.splashList, .allList {
+.splashList, .allList, .champList {
   height: 4em; }
 
 .allList {
   height: 16em; }
 
-.scroll, .scrollList, .splashList, .allList {
+.scroll, .scrollList, .splashList, .allList, .champList {
   overflow: scroll; }
 
-.scroll::-webkit-scrollbar, .scrollList::-webkit-scrollbar, .splashList::-webkit-scrollbar, .allList::-webkit-scrollbar {
-  display: none; }
+.scroll::-webkit-scrollbar, .scrollList::-webkit-scrollbar, .splashList::-webkit-scrollbar, .allList::-webkit-scrollbar, .champList::-webkit-scrollbar {
+  display: none;
+  overflow-y: scroll; }
 
-.scrollList, .splashList, .allList {
+.scrollList, .splashList, .allList, .champList {
   width: 40em; }
 
 .splashContainer, .buildItemContainer {
@@ -45,13 +46,13 @@
 
 .item, .hiddenItem, .itemviewer {
   width: 40em;
-  height: 20em;
-  border: solid crimson 2px;
-  -webkit-transition-delay: 4s; }
+  height: 22em;
+  border: ridge black 2px;
+  border-radius: 3%; }
 
 .displayBox, .itemviewer {
   position: absolute;
-  bottom: 10vh;
+  bottom: 15vh;
   left: 2vh; }
 
 .description {
@@ -61,11 +62,13 @@
 
 .buildItemContainer:hover .hidden, .buildItemContainer:hover .hiddenItem {
   visibility: visible;
-  display: inline;
-  -webkit-transition-delay: 4s; }
+  display: inline; }
 
 .champion {
   border: orangered 0.1em solid; }
+
+.champList {
+  height: 16em; }
 
 footer {
   position: fixed;
@@ -73,6 +76,15 @@ footer {
   width: 100%;
   height: 5em;
   font-size: 1em;
-  background: white; }
+  background: linear-gradient(to right, #5b0099, black); }
+
+header {
+  width: 100%;
+  height: 4em;
+  background: linear-gradient(to right, #5b0099, black); }
+
+button {
+  background: #A8A8CC;
+  height: 100%; }
 
 /*# sourceMappingURL=main.css.map */
