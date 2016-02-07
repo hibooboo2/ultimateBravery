@@ -12,14 +12,16 @@ import (
 	"time"
 	"strings"
 	"net/url"
+	"github.com/Sirupsen/logrus"
 )
 
 var s1 = InitTemplates()
 
 func main() {
+	logrus.SetLevel(logrus.DebugLevel)
 	start := time.Now()
 	lolapi.Init()
-	fmt.Printf("Total to init: %v", time.Since(start))
+	logrus.Debugf("Total to init: %v", time.Since(start))
 	go func() {
 		for {
 			s1 = InitTemplates()
@@ -93,7 +95,7 @@ func champById(w http.ResponseWriter, r *http.Request) {
 
 func build(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	fmt.Printf("%##v", vars)
+	logrus.Debugf("%##v", vars)
 	build := lolapi.BuildFromLink(vars["buildLink"])
 	s1.ExecuteTemplate(w, "build", *build)
 
@@ -146,7 +148,6 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 		Host:r.Host,
 		Vars: vars,
 	}
-	fmt.Println(vars["host"])
 	s1.ExecuteTemplate(w, "404", lolapi.Pretty(requestProxy))
 }
 
@@ -157,7 +158,7 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
 			if route != nil {
-				fmt.Println(route.GetName())
+				logrus.Debugf("Route: %v %v",route.GetName(), mux.Vars(r))
 			}
 		}
 		s1.ExecuteTemplate(w, "header", nil)

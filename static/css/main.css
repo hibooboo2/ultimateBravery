@@ -1,60 +1,68 @@
-.list, .scrollList, .splashList {
+.list, .scrollList, .splashList, .allList {
   display: flex;
   flex-flow: row wrap;
   margin: 0 -5px 0 -5px 5px; }
 
-.splashList {
-  height: 960px; }
+.splashList, .allList {
+  height: 4em; }
 
-.scroll, .scrollList, .splashList {
+.allList {
+  height: 16em; }
+
+.scroll, .scrollList, .splashList, .allList {
   overflow: scroll; }
 
-.scroll::-webkit-scrollbar, .scrollList::-webkit-scrollbar, .splashList::-webkit-scrollbar {
+.scroll::-webkit-scrollbar, .scrollList::-webkit-scrollbar, .splashList::-webkit-scrollbar, .allList::-webkit-scrollbar {
   display: none; }
 
-.scrollList, .splashList {
-  width: 400px; }
+.scrollList, .splashList, .allList {
+  width: 40em; }
 
 .splashContainer, .buildItemContainer {
-  height: 40px;
-  width: 40px; }
+  height: 4em;
+  width: 4em; }
 
 .build {
   width: 40em;
   height: 20em; }
 
 .splashContainer, .buildItemContainer {
-  height: 40px;
-  width: 40px; }
+  height: 4em;
+  width: 4em; }
 
 .splash {
   border-radius: 100%;
-  height: 40px;
-  width: 40px; }
+  height: 4em;
+  width: 4em; }
 
 .champion {
-  height: 200px;
-  width: 400px; }
+  height: 20em;
+  width: 40em; }
 
 .hidden, .hiddenItem {
   visibility: hidden;
   display: none; }
 
-.item, .hiddenItem {
-  width: 400px;
-  height: 200px;
-  border: darkseagreen 0.1em solid;
-  position: fixed;
-  z-index: 1; }
+.item, .hiddenItem, .itemviewer {
+  width: 40em;
+  height: 20em;
+  border: solid crimson 2px;
+  -webkit-transition-delay: 4s; }
+
+.displayBox, .itemviewer {
+  position: absolute;
+  bottom: 10vh;
+  left: 2vh; }
 
 .description {
   width: 40em;
   height: 10em;
   overflow: scroll; }
 
-.splashContainer:hover .hidden, .buildItemContainer:hover .hidden, .splashContainer:hover .hiddenItem, .buildItemContainer:hover .hiddenItem {
+.buildItemContainer:hover .hidden, .buildItemContainer:hover .hiddenItem {
   visibility: visible;
-  display: inline; }
+  display: inline;
+  -webkit-transition-delay: 4s; }
 
 .champion {
   border: orangered 0.1em solid; }
@@ -63,7 +71,7 @@ footer {
   position: fixed;
   bottom: 0px;
   width: 100%;
-  height: 60px;
+  height: 5em;
   font-size: 1em;
   background: white; }
 

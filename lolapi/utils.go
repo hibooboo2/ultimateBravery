@@ -3,13 +3,13 @@ package lolapi
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"os"
 	"time"
 	"strconv"
+	"github.com/Sirupsen/logrus"
 )
 
 type SummonerSpell struct {
@@ -19,8 +19,7 @@ func getResource(resourceUrl string) interface{} {
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
-		fmt.Fprintln(os.Stderr, "Response from riot: "+ response.Status)
-		fmt.Fprintln(os.Stderr, resourceUrl)
+		logrus.Errorf("Response from riot: %v \n%v",response.Status ,resourceUrl)
 		return nil
 	}
 	defer response.Body.Close()
@@ -65,15 +64,15 @@ func FromLink(object string, objectType interface{}) interface{} {
 
 	data, err := base64.StdEncoding.DecodeString(object)
 	if err != nil {
-		fmt.Println("Decode error:", err)
+		logrus.Println("Decode error:", err)
 		return nil
 	}
 	err = json.Unmarshal(data, objectType)
 	if err != nil {
-		fmt.Println("Unmarshal Error:", err)
+		logrus.Println("Unmarshal Error:", err)
 		return nil
 	}
-	fmt.Printf("%##v \n", objectType)
+	logrus.Printf("%##v \n", objectType)
 	return objectType
 }
 
@@ -82,7 +81,7 @@ func Pretty(object interface{}) string {
 	if err == nil {
 		return string(jsonObject)
 	}
-	fmt.Println(err.Error())
+	logrus.Println(err.Error())
 	return ""
 }
 

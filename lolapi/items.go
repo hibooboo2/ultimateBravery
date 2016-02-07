@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"github.com/Sirupsen/logrus"
 )
 
 var AllItems = []*Item{}
@@ -131,37 +132,36 @@ func (theItem *Item) Init() *Item {
 	if theItem.partialInit() == nil {
 		return nil
 	}
-	if  len(theItem.FromItems) == 0 {
-		theItem.FromItems = []*Item {}
-		for _, val := range theItem.From {
-			id := idStringToId(val)
-			gotItem := GetItemById(id)
-			if gotItem == DEFAULT_ITEM {
-				gotItem = GetItemFromRiot(val)
-			}
-			gotItem = gotItem.partialInit()
-			if gotItem != nil {
-				theItem.FromItems = append(theItem.FromItems, gotItem)
-			} else {
-				idsToIgnore[id] = id
-			}
-		}
-		theItem.IntoItems = []*Item {}
-		for _, val := range theItem.Into {
-			id := idStringToId(val)
-			gotItem := GetItemById(id)
-			if gotItem == DEFAULT_ITEM {
-				gotItem = GetItemFromRiot(val)
-			}
-			gotItem.partialInit()
-			if gotItem != nil {
-				theItem.IntoItems = append(theItem.IntoItems, gotItem)
-			} else {
-				idsToIgnore[id] = id
-			}
-		}
 
+	theItem.FromItems = []*Item {}
+	for _, val := range theItem.From {
+		id := idStringToId(val)
+		gotItem := GetItemById(id)
+		if gotItem == DEFAULT_ITEM {
+			gotItem = GetItemFromRiot(val)
+		}
+		gotItem = gotItem.partialInit()
+		if gotItem != nil {
+			theItem.FromItems = append(theItem.FromItems, gotItem)
+		} else {
+			idsToIgnore[id] = id
+		}
 	}
+	theItem.IntoItems = []*Item {}
+	for _, val := range theItem.Into {
+		id := idStringToId(val)
+		gotItem := GetItemById(id)
+		if gotItem == DEFAULT_ITEM {
+			gotItem = GetItemFromRiot(val)
+		}
+		gotItem.partialInit()
+		if gotItem != nil {
+			theItem.IntoItems = append(theItem.IntoItems, gotItem)
+		} else {
+			idsToIgnore[id] = id
+		}
+	}
+
 	if theItem.Verify() == nil {
 		theItem.initialized = true
 		return theItem
@@ -171,7 +171,7 @@ func (theItem *Item) Init() *Item {
 
 func (theItem *Item) partialInit() *Item {
 	if theItem == nil {
-		fmt.Println("Failed a partial Init")
+		logrus.Warn("Failed a partial Init")
 		return nil
 	}
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
@@ -220,7 +220,6 @@ func checkItems(theItem *Item, idStrings []string, items []*Item) error{
 				break
 			}
 			for _, item := range items {
-				fmt.Println(idString," ", strconv.Itoa(item.Id))
 				if item != nil {
 					hasItem = true
 					if strconv.Itoa(item.Id) == idString {
@@ -247,6 +246,8 @@ func initializeItemsSlice() {
 		}
 		json.Unmarshal(jsonItem, &item)
 		//itemGot := GetItemFromRiot(strconv.Itoa(item.Id))
+		//itemGot.partialInit()
+		//item = *itemGot
 		AllItems = append(AllItems, &item)
 		allItemsMap[item.Id] = &item
 	}
@@ -263,6 +264,7 @@ func initializeItemsSlice() {
 	for _, item := range allItemsMap {
 		AllItems = append(AllItems, item)
 	}
+	logrus.Debugf("Ignoring these id: %#v", idsToIgnore)
 }
 
 func RandomItem(itemsToUse []*Item) *Item {

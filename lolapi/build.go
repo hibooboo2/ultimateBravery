@@ -59,6 +59,10 @@ func (theLink *LOLBuild) getBuildLink() LOLBuildLink {
 	}
 }
 
+func (theBuild *LOLBuild)  getLink() string {
+	return MakeLink(theBuild.getBuildLink())
+}
+
 func (theBuild *LOLBuild) TotalCost() int {
 	sum := 0
 	for _, item := range theBuild.Items {
@@ -102,6 +106,10 @@ func RandomBraveryBuild(theMap *Map, champ *Champion) LOLBuild {
 	return build
 }
 
+func RandomBraveBuild() LOLBuild {
+	return RandomBraveryBuild(RandomMap(), RandomChampion())
+}
+
 func RandomBuildName() string {
 	return randomdata.SillyName()
 }
@@ -110,7 +118,8 @@ func BuildFromLink(link string) *LOLBuild {
 	x := FromLink(link, &LOLBuildLink{})
 	if x != nil {
 		build := x.(*LOLBuildLink).getBuild()
+		build.init()
 		return &build
 	}
-	return &LOLBuild{}
+	return &LOLBuild{ Name: "No Build", }
 }

@@ -13,7 +13,7 @@ type ItemData struct {
 	Type string
 	Version string
 	Basic  map[string]interface{}
-	//Data   map[string]Item
+	Data   map[string]Item
 	Groups []Group
 }
 

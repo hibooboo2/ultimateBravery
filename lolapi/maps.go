@@ -2,7 +2,7 @@ package lolapi
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/Sirupsen/logrus"
 )
 
 type Map struct {
@@ -25,7 +25,7 @@ func initializeMaps() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &aMap)
-		if aMap.MapId == 11 { //|| aMap.MapId == 12 || aMap.MapId == 8 {
+		if aMap.MapId == 11 || aMap.MapId == 12 || aMap.MapId == 8 {
 			AllMaps = append(AllMaps, &aMap)
 			allMapsMap[aMap.MapId] = &aMap
 		}
@@ -40,7 +40,7 @@ func initializeMaps() {
 			failedToVerify = append(failedToVerify, item.MapName)
 		}
 	}
-	fmt.Printf("%##v \n", failedToVerify)
+	logrus.Warnf("%##v \n", failedToVerify)
 }
 
 func (theMap *Map) Verify() error {
@@ -48,7 +48,7 @@ func (theMap *Map) Verify() error {
 }
 
 func (theMap *Map) Init() {
-	fmt.Printf("%##v \n",theMap)
+	logrus.Debug("%##v \n",theMap)
 }
 
 func RandomMap() *Map {

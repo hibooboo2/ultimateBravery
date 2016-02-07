@@ -1,6 +1,6 @@
 {{define "items"}}
     <h1>Items ({{ len . }} total)</h1>
-    <div class="splashList">
+    <div class="allList">
         {{ range . }}
                 {{ template "itemInBuild" . }}
         {{end}}

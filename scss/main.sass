@@ -1,4 +1,4 @@
-$splash-size: 40px
+$splash-size: 4em
 
 .list
     display: flex
@@ -7,7 +7,12 @@ $splash-size: 40px
 
 .splashList
     @extend .scrollList
-    height: $splash-size * 24
+    height: $splash-size * 1
+
+.allList
+    @extend .splashList
+    height: $splash-size * 4
+
 
 .scroll
     overflow: scroll
@@ -57,19 +62,28 @@ $splash-size: 40px
 .item 
     width: $splash-size * 10
     height: $splash-size * 5
-    border: darkseagreen 0.1em solid
-    position: fixed
-    z-index: 1
+    border: solid crimson 2px
+    -webkit-transition-delay: 4s
 
+.displayBox
+    position: absolute
+    bottom: 10vh
+    left: 2vh
+
+.itemviewer
+    @extend .item
+    @extend .displayBox
 
 .description 
     width: 40em
     height: 10em
     overflow: scroll
 
-.splashContainer:hover .hidden
+.buildItemContainer:hover .hidden
     visibility: visible
     display: inline
+    -webkit-transition-delay: 4s
+
 
 
 .champion 
@@ -79,7 +93,6 @@ footer
     position: fixed
     bottom: 0px
     width: 100%
-    height: 60px
+    height: 5em
     font-size: 1em
     background: white
-
