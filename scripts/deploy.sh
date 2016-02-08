@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-set -e
-
 cd $(dirname $0)/..
+
+git fetch --all
+git checkout origin/master
 
 docker rm -fv ultimateBravery || echo "No container for ultimateBravery".
 docker build -t ultimate-bravery .
