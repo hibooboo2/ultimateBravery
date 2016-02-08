@@ -42,28 +42,23 @@ $font_color : white !default
     width: 40em
     height: 20em
 
-
-.splashContainer
-    height: $splash-size
-    width: $splash-size
-
-
-.splash
+.splashArt
     border-radius: 100%
     height: $splash-size
     width: $splash-size
+    background-size: $splash-size $splash-size
 
 .champion
     height: $splash-size * 5
     width:  $splash-size * 10
 
-.hidden
-    visibility: hidden
+.hide
+    opacity: 0
     display: none
-
-.hiddenItem
-    @extend .hidden
-    @extend .item
+    .show:hover &
+        transition: opacity .3s .4s
+        opacity: 1
+        display: inline
 
 .item
     width: $splash-size * 10
@@ -77,21 +72,10 @@ $font_color : white !default
     left: 2vh
     background: $bg_primary
 
-.itemviewer
-    @extend .item
-    @extend .displayBox
-
 .description
     width: 40em
     height: 10em
     overflow: scroll
-
-.buildItemContainer:hover .hidden
-    visibility: visible
-    display: inline
-
-.champion
-    border: orangered 0.1em solid
 
 .champList
     @extend .splashList
@@ -112,8 +96,8 @@ header
 
 button
     background:  #A8A8CC
-    height: 100%
-
+    width: 33%
+    height: 50%
 body
     flex-wrap: wrap
     min-width: 1280px

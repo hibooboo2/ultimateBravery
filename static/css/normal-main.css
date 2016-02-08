@@ -57,46 +57,40 @@
   width: 40em;
   height: 20em; }
 
-.splashContainer, .buildItemContainer {
-  height: 4em;
-  width: 4em; }
-
-.splash {
+.splashArt {
   border-radius: 100%;
   height: 4em;
-  width: 4em; }
+  width: 4em;
+  background-size: 4em 4em; }
 
 .champion {
   height: 20em;
   width: 40em; }
 
-.hidden, .hiddenItem {
-  visibility: hidden;
+.hide {
+  opacity: 0;
   display: none; }
+  .show:hover .hide {
+    transition: opacity 0.3s 0.4s;
+    opacity: 1;
+    display: inline; }
 
-.item, .hiddenItem, .itemviewer {
+.item {
   width: 40em;
   height: 22em;
   border: ridge black 2px;
   border-radius: 3%; }
 
-.displayBox, .itemviewer {
+.displayBox {
   position: absolute;
   bottom: 15vh;
   left: 2vh;
-  background: linear-gradient(to right, red, yellow); }
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
 
 .description {
   width: 40em;
   height: 10em;
   overflow: scroll; }
-
-.buildItemContainer:hover .hidden, .buildItemContainer:hover .hiddenItem {
-  visibility: visible;
-  display: inline; }
-
-.champion {
-  border: orangered 0.1em solid; }
 
 .champList {
   height: 16em; }
@@ -107,16 +101,17 @@ footer {
   width: 100%;
   height: 5em;
   font-size: 1em;
-  background: linear-gradient(to right, #5b0099, black); }
+  background: linear-gradient(to right, #225808, #549219, #2e4793); }
 
 header {
   width: 100%;
   height: 4em;
-  background: linear-gradient(to right, #5b0099, black); }
+  background: linear-gradient(to right, #225808, #549219, #2e4793); }
 
 button {
   background: #A8A8CC;
-  height: 100%; }
+  width: 33%;
+  height: 50%; }
 
 body {
   flex-wrap: wrap;
@@ -126,11 +121,11 @@ body {
   text-align: left; }
 
 html {
-  color: black;
-  background: linear-gradient(to right, red, yellow);
+  color: white;
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw);
   text-align: center; }
 
 .allcontent {
-  background: linear-gradient(to right, red, yellow); }
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
 
 /*# sourceMappingURL=normal-main.css.map */

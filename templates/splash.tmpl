@@ -1,5 +1,3 @@
 {{ define "splash" }}
-<div class="splashContainer">
-    <a href="{{ .PermLink }}"><img src="{{ .Picture }}" alt="{{ .Name }}" class="splash"/></a>
-</div>
+    <img onclick="location.href='{{ .PermLink }}';" src="{{ .Picture }}" class="splashArt"/>
 {{end}}

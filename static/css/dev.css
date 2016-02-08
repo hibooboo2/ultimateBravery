@@ -57,46 +57,40 @@
   width: 40em;
   height: 20em; }
 
-.splashContainer, .buildItemContainer {
-  height: 4em;
-  width: 4em; }
-
-.splash {
+.splashArt {
   border-radius: 100%;
   height: 4em;
-  width: 4em; }
+  width: 4em;
+  background-size: 4em 4em; }
 
 .champion {
   height: 20em;
   width: 40em; }
 
-.hidden, .hiddenItem {
-  visibility: hidden;
+.hide {
+  opacity: 0;
   display: none; }
+  .show:hover .hide {
+    transition: opacity 0.3s 0.4s;
+    opacity: 1;
+    display: inline; }
 
-.item, .hiddenItem, .itemviewer {
+.item {
   width: 40em;
   height: 22em;
   border: ridge black 2px;
   border-radius: 3%; }
 
-.displayBox, .itemviewer {
+.displayBox {
   position: absolute;
   bottom: 15vh;
   left: 2vh;
-  background: linear-gradient(to right, black, green); }
+  background: linear-gradient(to right, green, black); }
 
 .description {
   width: 40em;
   height: 10em;
   overflow: scroll; }
-
-.buildItemContainer:hover .hidden, .buildItemContainer:hover .hiddenItem {
-  visibility: visible;
-  display: inline; }
-
-.champion {
-  border: orangered 0.1em solid; }
 
 .champList {
   height: 16em; }
@@ -107,16 +101,17 @@ footer {
   width: 100%;
   height: 5em;
   font-size: 1em;
-  background: linear-gradient(to right, green, black); }
+  background: linear-gradient(to right, black, green); }
 
 header {
   width: 100%;
   height: 4em;
-  background: linear-gradient(to right, green, black); }
+  background: linear-gradient(to right, black, green); }
 
 button {
   background: #A8A8CC;
-  height: 100%; }
+  width: 33%;
+  height: 50%; }
 
 body {
   flex-wrap: wrap;
@@ -127,17 +122,18 @@ body {
 
 html {
   color: white;
-  background: linear-gradient(to right, black, green);
+  background: linear-gradient(to right, green, black);
   text-align: center; }
 
 .allcontent {
-  background: linear-gradient(to right, black, green); }
+  background: linear-gradient(to right, green, black); }
 
-.dev, div:hover, button:hover, a:hover, img:hover, .row:hover, [class*="col"], img.splash:hover {
+.dev, div:hover, button:hover, a:hover, img:hover, [class*="col"]:hover, .row:hover, img.splash:hover, input:hover {
   border: black ridge 4px;
   padding: 0.1em; }
 
-.delay, div, button, a, img, [class*="col"], .row, img.splash, .dev, div:hover, button:hover, a:hover, img:hover, .row:hover, img.splash:hover {
-  transition-duration: 0.2s; }
+.delay, div, button, a, img, [class*="col"], .row, img.splash, input, .dev, div:hover, button:hover, a:hover, img:hover, [class*="col"]:hover, .row:hover, img.splash:hover, input:hover {
+  transition-duration: 300ms;
+  transition-delay: 300ms; }
 
 /*# sourceMappingURL=dev.css.map */

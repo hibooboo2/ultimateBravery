@@ -40,7 +40,7 @@ func main() {
 	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
 	myMux.Middle("/items", allItems).Name("items")
 	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
-	myMux.Middle("/champion", allChamps).Name("Champs")
+	myMux.Middle("/champions", allChamps).Name("Champs")
 	myMux.Middle("/champions/{id:[0-9]+}", champById).Name("ChampById")
 	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
 	http.Handle("/", mux)

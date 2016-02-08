@@ -1,11 +1,10 @@
 @import "dark"
 @import "main"
 
-div:hover, button:hover, a:hover, img:hover, .row:hover,[class*="col"], img.splash:hover
-    @extend .dev
-
-div, button, a, img, [class*="col"], .row, img.splash
+div, button, a, img, [class*="col"], .row, img.splash, input,
     @extend .delay
+    &:hover
+        @extend .dev
 
 .dev
     @extend .delay
@@ -13,5 +12,5 @@ div, button, a, img, [class*="col"], .row, img.splash
     padding: 0.1em
 
 .delay
-    transition-duration: .2s
-
+    transition-duration: 300ms
+    transition-delay: 300ms
