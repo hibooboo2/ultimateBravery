@@ -70,8 +70,6 @@ func generateBuildAndStore(w http.ResponseWriter, r *http.Request) {
 	for x := 0; x < 1; x++ {
 		s1.ExecuteTemplate(w, "build", lolapi.RandomBraveryBuild(lolapi.RandomMap(), lolapi.RandomChampion()))
 	}
-	//s1.ExecuteTemplate(w, "items", lolapi.AllItems)
-	//s1.ExecuteTemplate(w, "champs", lolapi.AllChampions)
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
@@ -196,7 +194,6 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		}
 		thePage = PageInfo{Dev:dev, Name:routeName}
 		s1.ExecuteTemplate(w, "header", &thePage)
-
 		next (w, r)
 
 	}
