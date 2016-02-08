@@ -1,5 +1,5 @@
 FROM golang:1.5
-COPY ./ /ultimateBravery
+COPY ./ /go/src/github.com/hibooboo2/ultimateBravery
 WORKDIR /source
 EXPOSE 8000
-CMD /ultimateBravery/scripts/run
+CMD /go/src/github.com/hibooboo2/ultimateBravery
