@@ -85,7 +85,7 @@
   position: absolute;
   bottom: 15vh;
   left: 2vh;
-  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
+  background: radial-gradient(rgba(255, 255, 255, 0.61), rgba(0, 0, 0, 0.61)); }
 
 .description {
   width: 40em;
@@ -101,12 +101,12 @@ footer {
   width: 100%;
   height: 5em;
   font-size: 1em;
-  background: linear-gradient(to right, #225808, #549219, #2e4793); }
+  background: radial-gradient(rgba(255, 255, 255, 0.61), rgba(0, 0, 0, 0.61)); }
 
 header {
   width: 100%;
   height: 4em;
-  background: linear-gradient(to right, #225808, #549219, #2e4793); }
+  background: radial-gradient(rgba(255, 255, 255, 0.61), rgba(0, 0, 0, 0.61)); }
 
 button {
   background: #A8A8CC;
@@ -121,11 +121,11 @@ body {
   text-align: left; }
 
 html {
-  color: white;
-  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw);
+  color: black;
+  background: radial-gradient(rgba(255, 255, 255, 0.61), rgba(0, 0, 0, 0.61));
   text-align: center; }
 
 .allcontent {
-  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
+  background: radial-gradient(rgba(255, 255, 255, 0.61), rgba(0, 0, 0, 0.61)); }
 
 /*# sourceMappingURL=normal-main.css.map */
