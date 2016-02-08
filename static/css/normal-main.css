@@ -85,7 +85,7 @@
   position: absolute;
   bottom: 15vh;
   left: 2vh;
-  background: linear-gradient(to right, red, yellow); }
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
 
 .description {
   width: 40em;
@@ -122,10 +122,10 @@ body {
 
 html {
   color: white;
-  background: linear-gradient(to right, red, yellow);
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw);
   text-align: center; }
 
 .allcontent {
-  background: linear-gradient(to right, red, yellow); }
+  background: repeating-linear-gradient(90deg, #2fbc2c, rgba(31, 188, 47, 0.31) 5vw, #465298 20vw); }
 
 /*# sourceMappingURL=normal-main.css.map */
