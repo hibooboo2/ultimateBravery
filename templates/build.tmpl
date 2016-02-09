@@ -19,7 +19,7 @@
 
     <script lang="javascript">
         x = document.getElementById("copy-button");
-        x.setAttribute("data-clipboard-text", window.location.host + {{ .PermLink }});
+        x.setAttribute("data-clipboard-text", "http://" + window.location.host + {{ .PermLink }});
     </script>
     <div class="splashList">
         {{ range .Items }}
