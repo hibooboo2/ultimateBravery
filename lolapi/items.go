@@ -303,7 +303,7 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 	if theMap == nil {
 		theMap = RandomMap()
 	}
-	total := 0
+	total := 1
 	items := []*Item {RandomItem(fullBoots)}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items, champ)
