@@ -22,7 +22,8 @@ func getResource(resourceUrl string) interface{} {
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
-		logrus.Errorf("Response from riot: %v \n%v",response.Status ,resourceUrl)
+		logrus.Errorf("Resource: %v ",resourceUrl)
+		logrus.Errorf("Response from riot: %v \n%v",response.Status)
 		return nil
 	}
 	defer response.Body.Close()

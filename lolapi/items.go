@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/Sirupsen/logrus"
+"strings"
 )
 
 var AllItems = []*Item{}
 var allItemsMap = make(map[int]*Item)
 var idsToIgnore = make(map[int]int)
+var fullBoots = []*Item{}
 
 type Gold struct {
 	Base        int
@@ -65,13 +67,15 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 	if theItem.Group == "FlaskGroup" || theItem.Group == "JungleItems" {
 		return false
 	}
-	//if strings.Contains(theItem.Group, "Boots") {
-	//	for _, otherItem := range otherItems {
-	//		if strings.Contains(otherItem.Group, "Boots") {
-	//			return false
-	//		}
-	//	}
-	//}
+	if len(otherItems) >  0  && theItem.IsBoot() {
+		for _, otherItem := range otherItems {
+			if otherItem.IsBoot() {
+				return false
+			}
+		}
+	} else if len(otherItems) == 0 && !theItem.IsBoot() {
+		return false
+	}
 	if !theItem.CanUseOnMap(theMap) {
 		return false
 	}
@@ -107,6 +111,11 @@ func (theItem *Item) CantUpgrade() bool {
 		return false
 	}
 	return true
+}
+
+func (theItem *Item) IsBoot() bool {
+	logrus.Debugf("Item: %v isBoot %v \n", theItem.Name, (strings.Contains(theItem.Group, "Boot") || strings.Contains(theItem.Name, "Boots")))
+	return strings.Contains(theItem.Group, "Boot") || strings.Contains(theItem.Name, "Boots")
 }
 
 func (theItem *Item) IsAnUpgrade() bool {
@@ -265,6 +274,12 @@ func initializeItemsSlice() {
 		AllItems = append(AllItems, item)
 	}
 	logrus.Debugf("Ignoring these id: %#v", idsToIgnore)
+	for _, item := range AllItems {
+		if item.IsBoot() && item.IsAnUpgrade() && item.CantUpgrade() {
+			fullBoots = append(fullBoots, item)
+		}
+	}
+	logrus.Debugf("There are %v full boots.", len(fullBoots))
 }
 
 func RandomItem(itemsToUse []*Item) *Item {
@@ -289,7 +304,7 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 		theMap = RandomMap()
 	}
 	total := 0
-	items := []*Item {}
+	items := []*Item {RandomItem(fullBoots)}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items, champ)
 		items = append(items, item)
