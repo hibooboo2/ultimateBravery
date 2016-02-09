@@ -81,7 +81,7 @@ func itemById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	item := lolapi.GetItemByIdString(vars["id"])
 	item.Init()
-	s1.ExecuteTemplate(w, "item", item)
+	s1.ExecuteTemplate(w, "itemById", item)
 }
 
 func allChamps(w http.ResponseWriter, r *http.Request) {

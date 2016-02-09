@@ -1,0 +1,33 @@
+{{define "itemById"}}
+<div class="item">
+    <div>
+    {{ template "splash" . }}
+    <div class="description scroll">
+        <h1>Name: {{ .Name }}</h1>
+        Cost (Base)  : {{ .Gold.Base }}
+        Cost (Total) : {{ .Gold.Total }}
+        Depth        : {{ .Depth }}
+        Group        : {{ .Group }}
+    <p>{{ .SanitizedDescription }}</p>
+    </div>
+    </div>
+    <div class="half">
+        {{ if len .IntoItems }}
+            <div class="splashList">
+                Into:
+                {{ range .IntoItems  }}
+                    {{template "itemInBuild" .}}
+                {{end}}
+            </div>
+        {{end}}
+        {{ if len .FromItems }}
+            <div class="splashList">
+                From:
+                {{ range .FromItems }}
+                    {{ template "itemInBuild" . }}
+                {{end}}
+            </div>
+        {{end}}
+    </div>
+</div>
+{{end}}
