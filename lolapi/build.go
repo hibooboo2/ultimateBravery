@@ -4,10 +4,14 @@ import (
 	"github.com/Pallinder/go-randomdata"
 	"fmt"
 	"github.com/Sirupsen/logrus"
+	"sort"
+	"strings"
 )
 
 type Spell struct {
 }
+
+var pastBuilds = make(map[string]string)
 
 type LOLBuild struct {
 	Name       string
@@ -84,6 +88,15 @@ func (theBuild *LOLBuild) init() {
 	theBuild.TotalCost = theBuild.CalcTotalCost()
 }
 
+func (theBuild *LOLBuild) Hash() string{
+	itemsStrings := []string {}
+	for _, value := range theBuild.Items {
+		itemsStrings = append(itemsStrings, value.Name)
+	}
+	sort.Strings(itemsStrings)
+	return theBuild.Champion.Name + ";" + strings.Join(itemsStrings, ";")
+}
+
 func RandomBuild() LOLBuild {
 	theMap := RandomMap()
 	champ := RandomChampion()
@@ -98,14 +111,26 @@ func RandomBuild() LOLBuild {
 }
 
 func RandomBraveryBuild(theMap *Map, champ *Champion) LOLBuild {
-	build := LOLBuild{
-		Name:     RandomBuildName(),
-		Items: RandomItemsFromMap(6, theMap, champ),
-		Champion: champ,
-		Map: theMap,
+	used := true
+	var build LOLBuild
+	var hash string
+	for used {
+		build = LOLBuild{
+			Name:     RandomBuildName(),
+			Items: RandomItemsFromMap(6, theMap, champ),
+			Champion: champ,
+			Map: theMap,
 
+		}
+		hash = build.Hash()
+		_, used = pastBuilds[hash]
+		if used {
+			logrus.Infof("Generated  a duplicate build. Rebuilding \n       < %v >", hash)
+		}
+		logrus.Debugf("Used %v Build : %v\n", used, hash)
 	}
 	build.init()
+	pastBuilds[hash] = hash
 	return build
 }
 

@@ -16,24 +16,20 @@ import (
 )
 
 var s1 = InitTemplates()
+var totalBuilds = 0
 
 func main() {
-	logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetLevel(logrus.InfoLevel)
 	start := time.Now()
 	lolapi.Init()
 	logrus.Debugf("Total to init: %v \n", time.Since(start))
-	go func() {
-		for {
-			s1 = InitTemplates()
-			time.Sleep(time.Second * 2)
-		}
-	}()
 	mux := mux.NewRouter().StrictSlash(true)
 	myMux := Router{
 		TheRouter: mux,
 	}
 	myMux.TheRouter.NotFoundHandler = http.HandlerFunc(process(notFound))
 	myMux.Middle("/", generateBuildAndStore).Name("Root")
+	myMux.Middle("/kill/server/", kill).Name("Kill")
 	myMux.Middle("/build/{buildLink}", build).Name("build")
 	staticFiles := http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))
 	myMux.TheRouter.PathPrefix("/static/").Handler(staticFiles).Name("static")
@@ -68,12 +64,17 @@ func generateBuildAndStore(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 	}
 	for x := 0; x < 1; x++ {
-		s1.ExecuteTemplate(w, "build", lolapi.RandomBraveryBuild(lolapi.RandomMap(), lolapi.RandomChampion()))
+		s1.ExecuteTemplate(w, "build", lolapi.RandomBraveBuild())
 	}
+	totalBuilds++
 }
 
 func allItems(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "items", lolapi.AllItems)
+}
+
+func kill(w http.ResponseWriter, r *http.Request) {
+	logrus.Fatalf("Closing total Request since start: %#v", totalBuilds)
 }
 
 func itemById(w http.ResponseWriter, r *http.Request) {
