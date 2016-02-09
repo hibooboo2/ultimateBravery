@@ -2,6 +2,8 @@
 <html>
 <head>
     <link rel='shortcut icon' href="/static/favicon.ico" type='image/x-icon' />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.8/clipboard.min.js"></script>
+    <script type="text/javascript" src="/static/js/clipboard.js"></script>
     {{ if .Dev }}
         <meta http-equiv="refresh" content="60">
         <link rel="stylesheet" type="text/css" href="/static/css/dev.css">
@@ -14,7 +16,7 @@
             <link rel="stylesheet" type="text/css" href="/static/css/normal-main.css">
        {{ end }}
     {{ end }}
-    <meta name="viewport" content="width=device-width" >
+    <meta name="viewport" content="width=device-width">
     <title>{{ .Name }}</title>
     <style>
         .delayShow {

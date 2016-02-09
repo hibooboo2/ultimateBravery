@@ -6,9 +6,21 @@
         <h1>{{ .Name }}</h1>
         <h2>{{ .Champion.Name }}</h2>
         </div>
+        <div class=".clipContainer">
+            <div class="clip">
+                Copy PermLink:
+                <button id="copy-button" data-clipboard-text="{{ .PermLink }}" data-clipboard-action="copy">
+                    <img class="clipImage" src="https://clipboardjs.com/assets/images/clippy.svg"/>
+                </button>
+            </div>
+        </div>
     </div>
-    </br>
-    <a href="{{ .PermLink }}">PermLink</a>
+    <hr/>
+
+    <script lang="javascript">
+        x = document.getElementById("copy-button");
+        x.setAttribute("data-clipboard-text", window.location.host + {{ .PermLink }});
+    </script>
     <div class="splashList">
         {{ range .Items }}
             {{ template "itemInBuild" . }}

@@ -114,7 +114,6 @@ func (theItem *Item) CantUpgrade() bool {
 }
 
 func (theItem *Item) IsBoot() bool {
-	logrus.Debugf("Item: %v isBoot %v \n", theItem.Name, (strings.Contains(theItem.Group, "Boot") || strings.Contains(theItem.Name, "Boots")))
 	return strings.Contains(theItem.Group, "Boot") || strings.Contains(theItem.Name, "Boots")
 }
 

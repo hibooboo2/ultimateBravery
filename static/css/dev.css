@@ -132,6 +132,29 @@ html {
 .allcontent {
   background: radial-gradient(#535353 1%, black); }
 
+.clip {
+  color: lime;
+  width: 12em;
+  height: 3.33333em;
+  background: none;
+  border: none;
+  opacity: 0;
+  transition-duration: 0.4s;
+  transition-timing-function: ease-in-out;
+  transition-property: opacity;
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  bottom: 0px; }
+  .clip button > img.clipImage, .clip button {
+    background: none;
+    border: none;
+    height: 2.66667em;
+    width: 2.66667em; }
+  .build:hover .clip {
+    opacity: 1; }
+
 .dev, div:hover, button:hover, a:hover, img:hover, [class*="col"]:hover, .row:hover, img.splash:hover, input:hover {
   border: black ridge 4px;
   padding: 0.1em; }

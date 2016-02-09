@@ -132,4 +132,27 @@ html {
 .allcontent {
   background: linear-gradient(to right, red, yellow); }
 
+.clip {
+  color: white;
+  width: 12em;
+  height: 3.33333em;
+  background: none;
+  border: none;
+  opacity: 0;
+  transition-duration: 0.4s;
+  transition-timing-function: ease-in-out;
+  transition-property: opacity;
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+  bottom: 0px; }
+  .clip button > img.clipImage, .clip button {
+    background: none;
+    border: none;
+    height: 2.66667em;
+    width: 2.66667em; }
+  .build:hover .clip {
+    opacity: 1; }
+
 /*# sourceMappingURL=main.css.map */
