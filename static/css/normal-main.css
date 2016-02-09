@@ -57,11 +57,15 @@
   width: 40em;
   height: 20em; }
 
-.splashArt {
+.splashArt, .bigSplashArt {
   border-radius: 100%;
   height: 4em;
   width: 4em;
   background-size: 4em 4em; }
+
+.bigSplashArt {
+  height: 8em;
+  width: 8em; }
 
 .champion {
   height: 20em;

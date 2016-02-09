@@ -10,14 +10,12 @@
         {{ else }}
         <a href="/?dev=true"><button>Im a dev</button></a>
         {{ end }}
+        {{ if .Dark }}
+            <a href="/?UI=LIGHT"><button>Light UI</button></a>
+        {{ else }}
+            <a href="/?UI=DARK"><button>Dark UI</button></a>
+        {{ end }}
     </div>
-    <!--<div class="col-1-2">-->
-        <!--{{ if .Dev }}-->
-        <!--<a href="/?dev=false"><button>Im a not dev</button></a>-->
-        <!--{{ else }}-->
-        <!--<a href="/?dev=true"><button>Im a dev</button></a>-->
-        <!--{{ end }}-->
-    <!--</div>-->
 </footer>
 <style>
     .delayShow {

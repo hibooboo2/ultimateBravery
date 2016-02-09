@@ -89,7 +89,7 @@
   position: absolute;
   bottom: 15vh;
   left: 2vh;
-  background: radial-gradient(#535353 1%, black); }
+  background: white; }
 
 .description {
   width: 40em;
@@ -105,12 +105,12 @@ footer {
   width: 100%;
   height: 5em;
   font-size: 1em;
-  background: radial-gradient(rgba(0, 0, 0, 0.61), rgba(255, 255, 255, 0.61)); }
+  background: lightgrey; }
 
 header {
   width: 100%;
   height: 4em;
-  background: radial-gradient(rgba(0, 0, 0, 0.61), rgba(255, 255, 255, 0.61)); }
+  background: lightgrey; }
 
 button {
   background: #A8A8CC;
@@ -125,11 +125,11 @@ body {
   text-align: left; }
 
 html {
-  color: lime;
-  background: radial-gradient(#535353 1%, black);
+  color: black;
+  background: white;
   text-align: center; }
 
 .allcontent {
-  background: radial-gradient(#535353 1%, black); }
+  background: white; }
 
-/*# sourceMappingURL=dark-main.css.map */
+/*# sourceMappingURL=light-main.css.map */

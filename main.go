@@ -153,37 +153,10 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter,r *http.Request) {
-		var thePage PageInfo
-		defer s1.ExecuteTemplate(w, "footer", &thePage)
+		thePage := &PageInfo{}
+		defer s1.ExecuteTemplate(w, "footer", thePage)
 		defer r.Body.Close()
-		cookie, err := r.Cookie("IS_DEV")
-		logrus.Debugf("%#v %v", cookie, err)
-		dev := false
-		if err != http.ErrNoCookie && cookie.Value == "true" {
-			dev = true
-		}
-		query := r.URL.Query()
-		val, ok := query["dev"]
-		logrus.Debugf("Query : %v", query)
-		if ok && val[0] == "true" {
-			cookie := http.Cookie{
-				Name:    "IS_DEV",
-				Value:   "true",
-				Path:    "/",
-				Expires: time.Now().Add(time.Second * 3600 * 24),
-			}
-			http.SetCookie(w, &cookie)
-			dev = true
-		} else if ok && val[0] == "false" {
-			cookie := http.Cookie{
-				Name:    "IS_DEV",
-				Value:   "",
-				Path:    "/",
-				Expires: time.Now().Add(time.Second * 3600 * 24),
-			}
-			http.SetCookie(w, &cookie)
-			dev = false
-		}
+		handleCookies(w, r, thePage)
 		routeName := "Home Page"
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
@@ -192,18 +165,80 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 				routeName = route.GetName()
 			}
 		}
-		thePage = PageInfo{Dev:dev, Name:routeName}
-		s1.ExecuteTemplate(w, "header", &thePage)
+		thePage.Name = routeName
+		s1.ExecuteTemplate(w, "header", thePage)
 		next (w, r)
 
 	}
 
 }
 
+func handleCookies(w http.ResponseWriter, r *http.Request, thePage *PageInfo) {
+	cookie, err := r.Cookie("IS_DEV")
+	logrus.Debugf("%#v %v", cookie, err)
+	dev := false
+	if err != http.ErrNoCookie && cookie.Value == "true" {
+		dev = true
+	}
+	query := r.URL.Query()
+	val, ok := query["dev"]
+	logrus.Debugf("Query : %v", query)
+	if ok && val[0] == "true" {
+		cookie := http.Cookie{
+			Name:    "IS_DEV",
+			Value:   "true",
+			Path:    "/",
+			Expires: time.Now().Add(time.Second * 3600 * 24),
+		}
+		http.SetCookie(w, &cookie)
+		dev = true
+	} else if ok && val[0] == "false" {
+		cookie := http.Cookie{
+			Name:    "IS_DEV",
+			Value:   "",
+			Path:    "/",
+			Expires: time.Now().Add(time.Second * 3600 * 24),
+		}
+		http.SetCookie(w, &cookie)
+		dev = false
+	}
+	val, ok = query["UI"]
+	logrus.Debugf("Query : %v", query)
+	theme := ""
+	if ok && val[0] != "" {
+		cookie := http.Cookie{
+			Name:    "UI",
+			Value:   val[0],
+			Path:    "/",
+			Expires: time.Now().Add(time.Second * 3600 * 24),
+		}
+		http.SetCookie(w, &cookie)
+		theme = val[0]
+	}
+
+	cookie, err = r.Cookie("UI")
+	if err != http.ErrNoCookie || ok {
+		if theme == "" {
+			theme = cookie.Value
+		}
+		logrus.Debugf("Theme is: %v", theme)
+		switch theme {
+			case "DARK":
+				thePage.Dark = true
+			case "LIGHT":
+				thePage.Light = true
+			default:
+				thePage.Light = true
+		}
+	}
+	thePage.Dev = dev
+}
+
 type PageInfo struct {
 	Dev bool
 	Name string
 	Dark bool
+	Light bool
 }
 
 type Router struct {

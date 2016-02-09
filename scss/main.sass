@@ -1,6 +1,6 @@
 @import "grid"
 
-$splash-size: 4em !default
+$splash-size: 4em
 $bg: linear-gradient(to right, #5b0099, black) !default
 $bg_primary :  linear-gradient(to right,red, yellow) !default
 $font_color : white !default
@@ -47,6 +47,11 @@ $font_color : white !default
     height: $splash-size
     width: $splash-size
     background-size: $splash-size $splash-size
+
+.bigSplashArt
+    @extend .splashArt
+    height: $splash-size * 2
+    width: $splash-size * 2
 
 .champion
     height: $splash-size * 5

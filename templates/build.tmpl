@@ -1,10 +1,11 @@
 {{ define "build" }}
 <div class="build">
-    {{ template "championInBuild" .Champion }}
-    {{ template "map" .Map }}
-    <div>
-    <div>{{ .Name }}</div>
-    <div>{{ .Champion.Name }}</div>
+    <div class="row">
+        {{ template "championInBuild" .Champion }}
+        <div>
+        <h1>{{ .Name }}</h1>
+        <h2>{{ .Champion.Name }}</h2>
+        </div>
     </div>
     </br>
     <a href="{{ .PermLink }}">PermLink</a>
@@ -13,6 +14,7 @@
             {{ template "itemInBuild" . }}
         {{ end }}
     </div>
+    <h4>Total Cost: {{ .TotalCost }}</h4>
 </div>
 {{ end }}
 

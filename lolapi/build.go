@@ -3,6 +3,7 @@ package lolapi
 import (
 	"github.com/Pallinder/go-randomdata"
 	"fmt"
+	"github.com/Sirupsen/logrus"
 )
 
 type Spell struct {
@@ -17,6 +18,7 @@ type LOLBuild struct {
 	Map        *Map
 	SpellToMax *Spell
 	PermLink  string
+	TotalCost int
 }
 
 type LOLBuildLink struct {
@@ -63,11 +65,12 @@ func (theBuild *LOLBuild)  getLink() string {
 	return MakeLink(theBuild.getBuildLink())
 }
 
-func (theBuild *LOLBuild) TotalCost() int {
+func (theBuild *LOLBuild) CalcTotalCost() int {
 	sum := 0
 	for _, item := range theBuild.Items {
 		sum += item.Gold.Total
 	}
+	logrus.Debugf("Total Cost of Build: %v", sum)
 	return sum
 }
 
@@ -78,6 +81,7 @@ func (theBuild *LOLBuild) init() {
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)
 	theBuild.Champion.init()
+	theBuild.TotalCost = theBuild.CalcTotalCost()
 }
 
 func RandomBuild() LOLBuild {

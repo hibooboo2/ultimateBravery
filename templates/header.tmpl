@@ -3,14 +3,16 @@
 <head>
     <link rel='shortcut icon' href="/static/favicon.ico" type='image/x-icon' />
     {{ if .Dev }}
-    <meta http-equiv="refresh" content="60">
-    <link rel="stylesheet" type="text/css" href="/static/css/dev.css">
+        <meta http-equiv="refresh" content="60">
+        <link rel="stylesheet" type="text/css" href="/static/css/dev.css">
     {{ else }}
         {{ if .Dark }}
-        <link rel="stylesheet" type="text/css" href="/static/css/dark-main.css">
+            <link rel="stylesheet" type="text/css" href="/static/css/dark-main.css">
+        {{ else if .Light }}
+            <link rel="stylesheet" type="text/css" href="/static/css/light-main.css">
         {{ else }}
-        <link rel="stylesheet" type="text/css" href="/static/css/normal-main.css">
-        {{ end }}
+            <link rel="stylesheet" type="text/css" href="/static/css/normal-main.css">
+       {{ end }}
     {{ end }}
     <meta name="viewport" content="width=device-width" >
     <title>{{ .Name }}</title>
@@ -22,8 +24,9 @@
 </head>
 <body>
 <header class="delayShow">
-    <a href="/"><button>Home</button></a><a href="/items"><button>Items</button></a><a href="/champions"><button>Champions</button></a>
-
+    <button onclick="location.href='/'">Home</button>
+    <button onclick="location.href='/items'">Items</button>
+    <button onclick="location.href='/champions'">Champions</button></a>
 </header>
 <div class="delayShow allcontent">
 {{end}}
