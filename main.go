@@ -210,7 +210,7 @@ func handleCookies(w http.ResponseWriter, r *http.Request, thePage *PageInfo) {
 			Name:    "UI",
 			Value:   val[0],
 			Path:    "/",
-			Expires: time.Now().Add(time.Second * 3600 * 24 * 365 * 10),
+			Expires: time.Now().Add(time.Second * 3600 * 24 * 365 * 100),
 		}
 		http.SetCookie(w, &cookie)
 		theme = val[0]
