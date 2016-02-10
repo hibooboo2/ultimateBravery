@@ -146,7 +146,13 @@ func (theItem *Item) Init() *Item {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
 		if gotItem == DEFAULT_ITEM {
-			gotItem = GetItemFromRiot(val)
+			temp, err := GetItemFromRiot(val)
+			if err != nil {
+				logrus.Error(err.Error())
+				logrus.Errorf("From Item %v not found for item %#v", val, theItem)
+			} else {
+				gotItem = temp
+			}
 		}
 		gotItem = gotItem.partialInit()
 		if gotItem != nil {
@@ -160,7 +166,13 @@ func (theItem *Item) Init() *Item {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
 		if gotItem == DEFAULT_ITEM {
-			gotItem = GetItemFromRiot(val)
+			temp, err := GetItemFromRiot(val)
+			if err != nil {
+				logrus.Error(err.Error())
+				logrus.Errorf("Into Item %v not found for item %#v", val, theItem)
+			} else {
+				gotItem = temp
+			}
 		}
 		gotItem.partialInit()
 		if gotItem != nil {
@@ -244,7 +256,10 @@ func checkItems(theItem *Item, idStrings []string, items []*Item) error{
 	return nil
 }
 func initializeItemsSlice() {
-	items := getResource(ITEMS)
+	items, err := getResource(ITEMS)
+	if err != nil {
+		panic(err)
+	}
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
 	for _, value := range gotItems {
 		var item Item
@@ -329,12 +344,12 @@ func GetItemByIdString(idString string) *Item {
 	return GetItemById(idStringToId(idString))
 }
 
-func GetItemFromRiot(idString string) *Item {
-	gotItem := getResource(fmt.Sprintf(ITEMS_BY_ID, idString))
+func GetItemFromRiot(idString string) (*Item, error) {
+	gotItem, err := getResource(fmt.Sprintf(ITEMS_BY_ID, idString))
 	if gotItem == nil {
 		id := idStringToId(idString)
 		idsToIgnore[id] = id
-		return nil
+		return nil, err
 	}
 	var item Item
 	jsonItem, err := json.Marshal(gotItem)
@@ -343,7 +358,7 @@ func GetItemFromRiot(idString string) *Item {
 	}
 	json.Unmarshal(jsonItem, &item)
 	gotItem = item.partialInit()
-	return &item
+	return &item, nil
 }
 
 func FullItems() []*Item {

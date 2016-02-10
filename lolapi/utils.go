@@ -10,6 +10,8 @@ import (
 	"time"
 	"strconv"
 	"github.com/Sirupsen/logrus"
+	"strings"
+	"fmt"
 )
 
 type SummonerSpell struct {
@@ -17,14 +19,21 @@ type SummonerSpell struct {
 
 var TotalResourceCalls = 0
 
-func getResource(resourceUrl string) interface{} {
+type RiotError struct {
+	Url string
+	Status int
+}
+
+func (riotError *RiotError) Error() string{
+	return  fmt.Sprintf("Status %v Resource: %v", riotError.Status, strings.Split(riotError.Url, API_KEY)[0])
+}
+
+func getResource(resourceUrl string) (interface{}, error) {
 	TotalResourceCalls = TotalResourceCalls + 1
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
-		logrus.Errorf("Resource: %v ",resourceUrl)
-		logrus.Errorf("Response from riot: %v \n%v",response.Status)
-		return nil
+		return nil, &RiotError{Url: resourceUrl, Status: response.StatusCode}
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
@@ -36,7 +45,7 @@ func getResource(resourceUrl string) interface{} {
 	if err != nil {
 		panic(err)
 	}
-	return data
+	return data, nil
 }
 
 func RandomNumber(max int) int {

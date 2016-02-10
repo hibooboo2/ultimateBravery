@@ -53,7 +53,10 @@ func RandomChampion() *Champion {
 }
 
 func initializeChampionsSlice() {
-	items := getResource(CHAMPIONS)
+	items, err:= getResource(CHAMPIONS)
+	if err != nil {
+		logrus.Fatalf("Failed to get items: %#v", err)
+	}
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
 	for _, value := range gotItems {
 		var champ Champion

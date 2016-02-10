@@ -20,7 +20,10 @@ type ItemData struct {
 var theItemData ItemData
 
 func initializeItemsFromDataSlice() {
-	data := getResource(ITEMS_JSON)
+	data, err := getResource(ITEMS_JSON)
+	if err != nil {
+		panic(err)
+	}
 	jsonItem, err := json.Marshal(data)
 	if err != nil {
 		panic(err)

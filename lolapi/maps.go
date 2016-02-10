@@ -16,7 +16,10 @@ var AllMaps = []*Map {}
 var allMapsMap = make(map[int]*Map)
 
 func initializeMaps() {
-	items := getResource(MAPS)
+	items, err := getResource(MAPS)
+	if err != nil {
+		panic(err)
+	}
 	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
 	for _, value := range gotItems {
 		var aMap Map
