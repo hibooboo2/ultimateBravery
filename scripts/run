@@ -3,8 +3,6 @@ set -ex
 
 cd $(dirname $0)/..
 
-. ./scripts/bootstrap
+. ./scripts/build
 
-ubVersion="tmp/ultimateBravery-$(git rev-parse --verify HEAD)"
-go build -o  $ubVersion
 ./$(echo $ubVersion)

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+cd $(dirname $0)/..
+
+
+
+export ubVersion="tmp/ultimateBravery-$(git rev-parse --verify HEAD)"
+go build -o  $ubVersion -a -tags "netgo" -installsuffix netgo -ldflags "-extldflags -static -X main.GITCOMMIT=$GITCOMMIT"
