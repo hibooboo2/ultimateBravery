@@ -84,7 +84,10 @@ func initializeChampionsSlice() {
 	}
 	logrus.Debugf("Total champions: %v", len(AllChampions))
 
-	shuffle = AllChampions[:]
+	shuffle = []*Champion{}
+	for _, val := range allChampsMap {
+		shuffle = append(shuffle, val)
+	}
 }
 
 func GetChampionById(id int) *Champion {
