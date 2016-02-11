@@ -8,6 +8,7 @@ import (
 
 var AllChampions = []*Champion{}
 var allChampsMap = make(map[int]*Champion)
+var shuffle = []*Champion{}
 
 type Skin struct {
 	Id   int
@@ -48,7 +49,16 @@ type Champion struct {
 }
 
 func RandomChampion() *Champion {
-	return AllChampions[RandomNumber(len(AllChampions)-1)]
+	index := RandomNumber(len(shuffle)-1)
+	champ := shuffle[index]
+	logrus.Debugf("Left in shuffle: %v", len(shuffle))
+	if len(shuffle) > 1 {
+		shuffle = append(shuffle[:index], shuffle[index + 1:]...)
+	} else  if len(shuffle) <= 1 {
+		logrus.Debug("Resetting shuffle.")
+		shuffle = AllChampions[:]
+	}
+	return champ
 
 }
 
@@ -70,6 +80,8 @@ func initializeChampionsSlice() {
 		allChampsMap[champ.Id] = &champ
 	}
 	logrus.Debugf("Total champions: %v", len(AllChampions))
+
+	shuffle = AllChampions[:]
 }
 
 func GetChampionById(id int) *Champion {

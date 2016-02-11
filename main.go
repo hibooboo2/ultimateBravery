@@ -63,7 +63,7 @@ func generateBuildAndStore(w http.ResponseWriter, r *http.Request) {
 		}
 		http.SetCookie(w, &cookie)
 	}
-	for x := 0; x < 1; x++ {
+	for x := 0; x < 129; x++ {
 		s1.ExecuteTemplate(w, "build", lolapi.RandomBraveBuild())
 	}
 	totalBuilds++
