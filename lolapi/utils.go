@@ -28,11 +28,21 @@ func (riotError *RiotError) Error() string{
 	return  fmt.Sprintf("Status %v Resource: %v", riotError.Status, strings.Split(riotError.Url, API_KEY)[0])
 }
 
+var canHitRiot = true
+var timeLeft = time.NewTimer(time.Second)
+
 func getResource(resourceUrl string) (interface{}, error) {
+	if !canHitRiot {
+		return nil, fmt.Errorf("Rate limited exceeded try again after %v", <- timeLeft.C)
+	}
 	TotalResourceCalls = TotalResourceCalls + 1
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
+		if response.StatusCode == 429 {
+			canHitRiot = false
+			timeLeft  = time.AfterFunc(time.Second * 600, func(){ canHitRiot = true })
+		}
 		return nil, &RiotError{Url: resourceUrl, Status: response.StatusCode}
 	}
 	defer response.Body.Close()
