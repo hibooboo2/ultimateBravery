@@ -372,6 +372,16 @@ func FullItems() []*Item {
 	return filteredItems
 }
 
+func FullItemsSR() []*Item {
+	filteredItems := []*Item{}
+	for _, val := range AllItems {
+		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps["11"] && val.RequiredChampion == "" {
+			filteredItems = append(filteredItems, val)
+		}
+	}
+	return filteredItems
+}
+
 func MapItems(theMap *Map) []*Item {
 	filteredItems := []*Item{}
 	for _, val := range AllItems {
