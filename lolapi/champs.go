@@ -56,7 +56,10 @@ func RandomChampion() *Champion {
 		shuffle = append(shuffle[:index], shuffle[index + 1:]...)
 	} else  if len(shuffle) <= 1 {
 		logrus.Debug("Resetting shuffle.")
-		shuffle = AllChampions[:]
+		shuffle = []*Champion{}
+		for _, val := range allChampsMap {
+			shuffle = append(shuffle, val)
+		}
 	}
 	return champ
 
