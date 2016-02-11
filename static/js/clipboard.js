@@ -1,4 +1,4 @@
 function x(){
     new Clipboard('#copy-button');
 }
-x()
+setTimeout(x, 200);
