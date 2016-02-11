@@ -291,6 +291,14 @@ func processCmdLineFlags() {
 			"logLevel": *logLevel,
 		}).Info("Setting log level")
 		logrus.SetLevel(parsedLogLevel)
+		if logrus.GetLevel() == logrus.DebugLevel {
+			go func (){
+				for {
+					s1 = InitTemplates()
+					time.Sleep(time.Second)
+				}
+			}()
+		}
 		logrus.Infof("go-machine-service\t gitcommit=%s\n", GITCOMMIT)
 	}
 }
