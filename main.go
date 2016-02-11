@@ -19,7 +19,7 @@ var s1 = InitTemplates()
 var totalBuilds = 0
 
 func main() {
-	logrus.SetLevel(logrus.InfoLevel)
+	logrus.SetLevel(logrus.DebugLevel)
 	start := time.Now()
 	lolapi.Init()
 	logrus.Debugf("Total to init: %v \n", time.Since(start))

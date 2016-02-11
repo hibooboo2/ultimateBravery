@@ -145,7 +145,7 @@ func (theItem *Item) Init() *Item {
 	for _, val := range theItem.From {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
-		if gotItem == DEFAULT_ITEM {
+		if gotItem.Id == DEFAULT_ITEM {
 			temp, err := GetItemFromRiot(val)
 			if err != nil {
 				logrus.Error(err.Error())
@@ -165,7 +165,7 @@ func (theItem *Item) Init() *Item {
 	for _, val := range theItem.Into {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
-		if gotItem == DEFAULT_ITEM {
+		if gotItem.Id == DEFAULT_ITEM {
 			temp, err := GetItemFromRiot(val)
 			if err != nil {
 				logrus.Error(err.Error())
@@ -332,14 +332,15 @@ func GetItemById(id int) *Item {
 	if keyExists {
 		return item.partialInit()
 	}
-	return DEFAULT_ITEM
+	return &Item{
+		Name: "Not Found",
+		Id: id,
+		SanitizedDescription: "Riots Api never returned this item.",
+	}
 }
 
-var DEFAULT_ITEM  = &Item{
-	Name: "404",
-	PermLink: "/items/9999",
-	Id: 9999,
-}
+const DEFAULT_ITEM  = 99999
+
 func GetItemByIdString(idString string) *Item {
 	return GetItemById(idStringToId(idString))
 }
