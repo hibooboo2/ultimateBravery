@@ -1,10 +1,16 @@
 {{ define "champion" }}
 <div class="champion">
-    {{ template "splash" . }}
-    <pre>
-{{ .Name }}
-{{ .Title }}
-{{ . }}
-    </pre>
+    {{ template "bigsplash" . }}
+    {{ .Name }}
+    {{ .Title }}
+    <div>
+    {{ range .Spells }}
+        {{ template "spellSplash" . }}
+    {{end}}
+    </div>
 </div>
+{{end}}
+
+{{ define "spellSplash" }}
+    <img src="{{ .Image.Picture }}" class="splashArt"/>
 {{end}}

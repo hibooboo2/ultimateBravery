@@ -8,9 +8,6 @@ import (
 	"strings"
 )
 
-type Spell struct {
-}
-
 var pastBuilds = make(map[string]string)
 
 type LOLBuild struct {
@@ -84,7 +81,7 @@ func (theBuild *LOLBuild) init() {
 	}
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)
-	theBuild.Champion.init()
+	theBuild.Champion.Init()
 	theBuild.TotalCost = theBuild.CalcTotalCost()
 }
 

@@ -1,8 +1,10 @@
 {{define "champs"}}
     <h1>Champions ({{ len . }} total)</h1>
-    <div class="champList">
+    <div class="champList wide">
         {{ range . }}
-                {{ template "splash" . }}
+                <div class="op-{{ .Info.Difficulty }}">
+                {{ template "championInBuild" . }}
+                </div>
         {{end}}
     </div>
 {{end}}

@@ -90,8 +90,9 @@ func allChamps(w http.ResponseWriter, r *http.Request) {
 
 func champById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	item := lolapi.GetChampionByIdString(vars["id"])
-	s1.ExecuteTemplate(w, "champion", item)
+	champ := lolapi.GetChampionByIdString(vars["id"])
+	champ.Init()
+	s1.ExecuteTemplate(w, "champion", champ)
 }
 
 func build(w http.ResponseWriter, r *http.Request) {
