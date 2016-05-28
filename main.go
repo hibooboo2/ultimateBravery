@@ -23,8 +23,6 @@ var totalBuilds = 0
 var GITCOMMIT = "HEAD"
 
 func main() {
-	start := time.Now()
-	logrus.Debugf("Total to init: %v \n", time.Since(start))
 	mux := mux.NewRouter().StrictSlash(true)
 	myMux := Router{
 		TheRouter: mux,

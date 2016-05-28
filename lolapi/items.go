@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/Sirupsen/logrus"
 )
@@ -68,13 +67,13 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 	if theItem.Group == "FlaskGroup" || theItem.Group == "JungleItems" {
 		return false
 	}
-	if len(otherItems) > 0 && theItem.IsBoot() {
+	if len(otherItems) > 0 && theItem.IsFullBoot() {
 		for _, otherItem := range otherItems {
-			if otherItem.IsBoot() {
+			if otherItem.IsFullBoot() {
 				return false
 			}
 		}
-	} else if len(otherItems) == 0 && !theItem.IsBoot() {
+	} else if len(otherItems) == 0 && !theItem.IsFullBoot() {
 		return false
 	}
 	if !theItem.CanUseOnMap(theMap) {
@@ -114,8 +113,8 @@ func (theItem *Item) CantUpgrade() bool {
 	return true
 }
 
-func (theItem *Item) IsBoot() bool {
-	return strings.Contains(theItem.Group, "Boot") || strings.Contains(theItem.Name, "Boots")
+func (theItem *Item) IsFullBoot() bool {
+	return theItem.Group == "BootsUpgrades"
 }
 
 func (theItem *Item) IsAnUpgrade() bool {
@@ -291,11 +290,11 @@ func init() {
 	}
 	logrus.Debugf("Ignoring these id: %#v", idsToIgnore)
 	for _, item := range AllItems {
-		if item.IsBoot() && item.IsAnUpgrade() && item.CantUpgrade() {
+		if item.IsFullBoot() {
 			fullBoots = append(fullBoots, item)
 		}
 	}
-	logrus.Debugf("There are %v full boots.", len(fullBoots))
+	logrus.Infof("There are %v full boots.", len(fullBoots))
 }
 
 func RandomItem(itemsToUse []*Item) *Item {
