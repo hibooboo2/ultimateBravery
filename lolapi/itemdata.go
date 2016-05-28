@@ -2,25 +2,28 @@ package lolapi
 
 import (
 	"encoding/json"
+
+	"github.com/Sirupsen/logrus"
 )
 
 type Group struct {
-	Id string
+	Id              string
 	MaxGroupOwnable string
 }
 
 type ItemData struct {
-	Type string
+	Type    string
 	Version string
-	Basic  map[string]interface{}
-	Data   map[string]Item
-	Groups []Group
+	Basic   map[string]interface{}
+	Data    map[string]Item
+	Groups  []Group
 }
 
 var theItemData ItemData
 
-func initializeItemsFromDataSlice() {
-	data, err := getResource(ITEMS_JSON)
+func init() {
+	logrus.Infoln("Itemdata.go init ran.")
+	data, err := getResource(ITEMS_JSON, false)
 	if err != nil {
 		panic(err)
 	}
@@ -29,16 +32,14 @@ func initializeItemsFromDataSlice() {
 		panic(err)
 	}
 	json.Unmarshal(jsonItem, &theItemData)
-	//for _, item := range theItemData.Data {
-	//	item.Init()
-	//}
-	//errs := []error{}
-	//for _, item := range theItemData.Data {
-	//	err := item.Verify()
-	//	if err != nil {
-	//		errs = append(errs, err)
-	//	}
-	//}
-	//fmt.Printf("%v", theItemData.Groups)
+	for _, item := range theItemData.Data {
+		item.Init()
+	}
+	errs := []error{}
+	for _, item := range theItemData.Data {
+		err := item.Verify()
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
 }
-

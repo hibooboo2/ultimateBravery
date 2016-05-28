@@ -2,26 +2,28 @@ package lolapi
 
 import (
 	"encoding/json"
+
 	"github.com/Sirupsen/logrus"
 )
 
 type Map struct {
-	MapId int
-	Image Image
+	MapId   int
+	Image   Image
 	MapName string
 }
 
-var AllMaps = []*Map {}
+var AllMaps = []*Map{}
 
 var allMapsMap = make(map[int]*Map)
 
-func initializeMaps() {
-	items, err := getResource(MAPS)
+func init() {
+	logrus.Infoln("Maps init ran.")
+	maps, err := getResource(MAPS, true)
 	if err != nil {
 		panic(err)
 	}
-	gotItems := items.(map[string]interface{})["data"].(map[string]interface{})
-	for _, value := range gotItems {
+	gotMaps := maps.(map[string]interface{})["data"].(map[string]interface{})
+	for _, value := range gotMaps {
 		var aMap Map
 		jsonItem, err := json.Marshal(value)
 		if err != nil {
@@ -36,7 +38,7 @@ func initializeMaps() {
 	for _, val := range AllMaps {
 		val.Init()
 	}
-	failedToVerify := []string {}
+	failedToVerify := []string{}
 	for _, item := range AllMaps {
 		err := item.Verify()
 		if err != nil {
@@ -51,7 +53,7 @@ func (theMap *Map) Verify() error {
 }
 
 func (theMap *Map) Init() {
-	logrus.Debug("%##v \n",theMap)
+	logrus.Debug("%##v \n", theMap)
 }
 
 func RandomMap() *Map {

@@ -3,6 +3,7 @@ package lolapi
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/Sirupsen/logrus"
 )
 
@@ -42,90 +43,90 @@ func (champ *Champion) Init() *Champion {
 }
 
 type Champion struct {
-	Id    int
-	Key   string
-	Name  string
-	Title string
-	Image Image
-	Skins []*Skin
-	Lore string
-	Blurb string
-	Allytips []string
+	Id        int
+	Key       string
+	Name      string
+	Title     string
+	Image     Image
+	Skins     []*Skin
+	Lore      string
+	Blurb     string
+	Allytips  []string
 	Enemytips []string
-	Tags []string
-	Partype string
-	Info ChampInfo
-	Stats ChampStats
-	Spells []*Spell
-	Passive Passive
-	Picture string
-	PermLink string
+	Tags      []string
+	Partype   string
+	Info      ChampInfo
+	Stats     ChampStats
+	Spells    []*Spell
+	Passive   Passive
+	Picture   string
+	PermLink  string
 }
 
 type Passive struct {
 	Name, Description, SanitizedDescription string
-	Image Image
+	Image                                   Image
 }
 
 type Spell struct {
-	Name string
-	Description string
+	Name                 string
+	Description          string
 	SanitizedDescription string
-	Tooltip string
-	SanitizedTooltip string
-	Leveltip string
-	Image Image
-	Resource string
-	Maxrank int
-	Cost []int
-	CostType string
-	CostBurn string
-	Cooldown []int
-	CooldownBurn string
-	Effect [][]int
-	EffectBurn []string
-	Range []int
-	RangeBurn string
-	key string
+	Tooltip              string
+	SanitizedTooltip     string
+	Leveltip             string
+	Image                Image
+	Resource             string
+	Maxrank              int
+	Cost                 []int
+	CostType             string
+	CostBurn             string
+	Cooldown             []int
+	CooldownBurn         string
+	Effect               [][]int
+	EffectBurn           []string
+	Range                []int
+	RangeBurn            string
+	key                  string
 }
 
 type ChampInfo struct {
-	Attack int
-	Defense int
-	Magic int
+	Attack     int
+	Defense    int
+	Magic      int
 	Difficulty int
 }
 
 type ChampStats struct {
-	Armor int
-	Armorperlevel int
-	Attackdamage int
+	Armor                int
+	Armorperlevel        int
+	Attackdamage         int
 	Attackdamageperlevel int
-	Attackrange int
-	Attackspeedoffset int
-	Attackspeedperlevel int
-	Crit int
-	Critperlevel int
-	Hp int
-	Hpperlevel int
-	Hpregen int
-	Hpregenperlevel int
-	Movespeed int
-	Mp int
-	Mpperlevel int
-	Mpregen int
-	Mpregenperlevel int
-	Spellblock int
-	Spellblockperlevel int
+	Attackrange          int
+	Attackspeedoffset    int
+	Attackspeedperlevel  int
+	Crit                 int
+	Critperlevel         int
+	Hp                   int
+	Hpperlevel           int
+	Hpregen              int
+	Hpregenperlevel      int
+	Movespeed            int
+	Mp                   int
+	Mpperlevel           int
+	Mpregen              int
+	Mpregenperlevel      int
+	Spellblock           int
+	Spellblockperlevel   int
 }
 
 func RandomChampion() *Champion {
-	index := RandomNumber(len(shuffle)-1)
+	index := RandomNumber(len(shuffle) - 1)
 	champ := shuffle[index]
 	logrus.Debugf("Left in shuffle: %v", len(shuffle))
 	if len(shuffle) > 1 {
-		shuffle = append(shuffle[:index], shuffle[index + 1:]...)
-	} else  if len(shuffle) <= 1 {
+		shuffle = append(shuffle[:index], shuffle[index+1:]...)
+	} else if len(shuffle) <= 1 {
 		logrus.Debug("Resetting shuffle.")
 		shuffle = []*Champion{}
 		for _, val := range allChampsMap {
@@ -137,8 +138,9 @@ func RandomChampion() *Champion {
 
 }
 
-func initializeChampionsSlice() {
-	items, err:= getResource(CHAMPIONS)
+func init() {
+	logrus.Infoln("Champs init ran.")
+	items, err := getResource(CHAMPIONS, true)
 	if err != nil {
 		logrus.Fatalf("Failed to get items: %#v", err)
 	}

@@ -4,14 +4,15 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"time"
 	"strconv"
-	"github.com/Sirupsen/logrus"
 	"strings"
-	"fmt"
+	"time"
+
+	"github.com/Sirupsen/logrus"
 )
 
 type SummonerSpell struct {
@@ -20,28 +21,30 @@ type SummonerSpell struct {
 var TotalResourceCalls = 0
 
 type RiotError struct {
-	Url string
+	Url    string
 	Status int
 }
 
-func (riotError *RiotError) Error() string{
-	return  fmt.Sprintf("Status %v Resource: %v", riotError.Status, strings.Split(riotError.Url, API_KEY)[0])
+func (riotError *RiotError) Error() string {
+	return fmt.Sprintf("Status %v Resource: %v", riotError.Status, strings.Split(riotError.Url, API_KEY)[0])
 }
 
 var canHitRiot = true
 var timeLeft = time.NewTimer(time.Second)
 
-func getResource(resourceUrl string) (interface{}, error) {
+func getResource(resourceUrl string, addKey bool) (interface{}, error) {
 	if !canHitRiot {
-		return nil, fmt.Errorf("Rate limited exceeded try again after %v", <- timeLeft.C)
+		return nil, fmt.Errorf("Rate limited exceeded try again after %v", <-timeLeft.C)
 	}
 	TotalResourceCalls = TotalResourceCalls + 1
-	resourceUrl = resourceUrl + ADD_KEY + API_KEY
+	if addKey {
+		resourceUrl = resourceUrl + ADD_KEY + API_KEY
+	}
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
 		if response.StatusCode == 429 {
 			canHitRiot = false
-			timeLeft  = time.AfterFunc(time.Second * 600, func(){ canHitRiot = true })
+			timeLeft = time.AfterFunc(time.Second*600, func() { canHitRiot = true })
 		}
 		return nil, &RiotError{Url: resourceUrl, Status: response.StatusCode}
 	}
@@ -63,17 +66,6 @@ func RandomNumber(max int) int {
 		return 0
 	}
 	return rand.Intn(max)
-}
-
-func Init() {
-	defer func (){
-		logrus.Debugf("Made %#v requests to riot.", TotalResourceCalls)
-	}()
-	rand.Seed(time.Now().Unix())
-	initializeChampionsSlice()
-	initializeItemsSlice()
-	initializeItemsFromDataSlice()
-	initializeMaps()
 }
 
 func MakeLink(object interface{}) string {
@@ -129,7 +121,6 @@ func totalInBuild(items []*Item, group string) int {
 	return total
 }
 
-
-type ReaderWriter struct{
+type ReaderWriter struct {
 	data []byte
 }

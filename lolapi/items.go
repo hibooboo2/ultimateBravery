@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
+
 	"github.com/Sirupsen/logrus"
-"strings"
 )
 
 var AllItems = []*Item{}
@@ -37,10 +38,10 @@ type Item struct {
 	Picture              string
 	PermLink             string
 	Maps                 map[string]bool
-	Group               string
-	RequiredChampion    string
-	HideFromAll         bool
-	initialized         bool
+	Group                string
+	RequiredChampion     string
+	HideFromAll          bool
+	initialized          bool
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -67,7 +68,7 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 	if theItem.Group == "FlaskGroup" || theItem.Group == "JungleItems" {
 		return false
 	}
-	if len(otherItems) >  0  && theItem.IsBoot() {
+	if len(otherItems) > 0 && theItem.IsBoot() {
 		for _, otherItem := range otherItems {
 			if otherItem.IsBoot() {
 				return false
@@ -93,7 +94,7 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 				}
 			}
 		}
-		if totalCanHave >= 1 && totalInBuild(otherItems, theItem.Group) + 1 > totalCanHave {
+		if totalCanHave >= 1 && totalInBuild(otherItems, theItem.Group)+1 > totalCanHave {
 			return false
 		}
 	}
@@ -141,7 +142,7 @@ func (theItem *Item) Init() *Item {
 		return nil
 	}
 
-	theItem.FromItems = []*Item {}
+	theItem.FromItems = []*Item{}
 	for _, val := range theItem.From {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
@@ -161,7 +162,7 @@ func (theItem *Item) Init() *Item {
 			idsToIgnore[id] = id
 		}
 	}
-	theItem.IntoItems = []*Item {}
+	theItem.IntoItems = []*Item{}
 	for _, val := range theItem.Into {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
@@ -195,7 +196,7 @@ func (theItem *Item) partialInit() *Item {
 		return nil
 	}
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
-	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
+	theItem.PermLink = fmt.Sprintf("/items/%v", theItem.Id)
 	return theItem
 }
 
@@ -230,7 +231,7 @@ func (theItem *Item) Verify() error {
 	return nil
 }
 
-func checkItems(theItem *Item, idStrings []string, items []*Item) error{
+func checkItems(theItem *Item, idStrings []string, items []*Item) error {
 	if len(idStrings) > 0 {
 		for _, idString := range idStrings {
 			matched := false
@@ -255,8 +256,9 @@ func checkItems(theItem *Item, idStrings []string, items []*Item) error{
 	}
 	return nil
 }
-func initializeItemsSlice() {
-	items, err := getResource(ITEMS)
+func init() {
+	logrus.Infoln("Items.go init ran.")
+	items, err := getResource(ITEMS, true)
 	if err != nil {
 		panic(err)
 	}
@@ -300,10 +302,12 @@ func RandomItem(itemsToUse []*Item) *Item {
 	if itemsToUse == nil {
 		itemsToUse = AllItems
 	}
-	return itemsToUse[RandomNumber(len(itemsToUse)-1)]
+	n := RandomNumber(len(itemsToUse) - 1)
+	logrus.Printf("Len of items to use: %v\n", n)
+	return itemsToUse[n]
 }
 
-func RandomItemFromMap(theMap *Map, otherItems []*Item, champ * Champion) *Item {
+func RandomItemFromMap(theMap *Map, otherItems []*Item, champ *Champion) *Item {
 
 	item := AllItems[RandomNumber(len(AllItems)-1)]
 	for !item.CanUseInBuild(theMap, otherItems, champ) {
@@ -318,7 +322,7 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 		theMap = RandomMap()
 	}
 	total := 1
-	items := []*Item {RandomItem(fullBoots)}
+	items := []*Item{RandomItem(fullBoots)}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items, champ)
 		items = append(items, item)
@@ -333,20 +337,20 @@ func GetItemById(id int) *Item {
 		return item.partialInit()
 	}
 	return &Item{
-		Name: "Not Found",
-		Id: id,
+		Name:                 "Not Found",
+		Id:                   id,
 		SanitizedDescription: "Riots Api never returned this item.",
 	}
 }
 
-const DEFAULT_ITEM  = 99999
+const DEFAULT_ITEM = 99999
 
 func GetItemByIdString(idString string) *Item {
 	return GetItemById(idStringToId(idString))
 }
 
 func GetItemFromRiot(idString string) (*Item, error) {
-	gotItem, err := getResource(fmt.Sprintf(ITEMS_BY_ID, idString))
+	gotItem, err := getResource(fmt.Sprintf(ITEMS_BY_ID, idString), false)
 	if gotItem == nil {
 		id := idStringToId(idString)
 		idsToIgnore[id] = id

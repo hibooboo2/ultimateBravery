@@ -1,20 +1,21 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/hibooboo2/ultimateBravery/lolapi"
-	"github.com/gorilla/mux"
-	uuid "github.com/nu7hatch/gouuid"
 	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"time"
-	"strings"
 	"net/url"
-	"github.com/Sirupsen/logrus"
-	"flag"
 	"os"
+	"strings"
+	"time"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/gorilla/mux"
+	"github.com/hibooboo2/ultimateBravery/lolapi"
+	uuid "github.com/nu7hatch/gouuid"
 )
 
 var s1 = InitTemplates()
@@ -22,9 +23,7 @@ var totalBuilds = 0
 var GITCOMMIT = "HEAD"
 
 func main() {
-	processCmdLineFlags()
 	start := time.Now()
-	lolapi.Init()
 	logrus.Debugf("Total to init: %v \n", time.Since(start))
 	mux := mux.NewRouter().StrictSlash(true)
 	myMux := Router{
@@ -34,7 +33,7 @@ func main() {
 	myMux.Middle("/", generateBuildAndStore).Name("Root")
 	myMux.Middle("/kill/server/", kill).Name("Kill")
 	myMux.Middle("/build/{buildLink}", build).Name("build")
-	staticFiles := http.StripPrefix("/static/",http.FileServer(http.Dir("./static/")))
+	staticFiles := http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))
 	myMux.TheRouter.PathPrefix("/static/").Handler(staticFiles).Name("static")
 	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
 	myMux.Middle("/items", allItems).Name("items")
@@ -135,26 +134,26 @@ func InitTemplates() *template.Template {
 
 type RequestJson struct {
 	Method string
-	URL *url.URL
-	Proto string
-	Host string
-	Vars map[string]string
+	URL    *url.URL
+	Proto  string
+	Host   string
+	Vars   map[string]string
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	requestProxy := &RequestJson{
-		Method:r.Method,
-		URL:r.URL,
-		Proto:r.Proto,
-		Host:r.Host,
-		Vars: vars,
+		Method: r.Method,
+		URL:    r.URL,
+		Proto:  r.Proto,
+		Host:   r.Host,
+		Vars:   vars,
 	}
 	s1.ExecuteTemplate(w, "404", lolapi.Pretty(requestProxy))
 }
 
 func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter,r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		thePage := &PageInfo{}
 		defer s1.ExecuteTemplate(w, "footer", thePage)
 		defer r.Body.Close()
@@ -163,13 +162,13 @@ func process(next func(w http.ResponseWriter, r *http.Request)) func(w http.Resp
 		if !strings.Contains(r.URL.Path, ".") {
 			route := mux.CurrentRoute(r)
 			if route != nil {
-				logrus.Debugf("Route: %v %v",route.GetName(), mux.Vars(r))
+				logrus.Debugf("Route: %v %v", route.GetName(), mux.Vars(r))
 				routeName = route.GetName()
 			}
 		}
 		thePage.Name = routeName
 		s1.ExecuteTemplate(w, "header", thePage)
-		next (w, r)
+		next(w, r)
 
 	}
 
@@ -225,21 +224,21 @@ func handleCookies(w http.ResponseWriter, r *http.Request, thePage *PageInfo) {
 		}
 		logrus.Debugf("Theme is: %v", theme)
 		switch theme {
-			case "DARK":
-				thePage.Dark = true
-			case "LIGHT":
-				thePage.Light = true
-			default:
-				thePage.Light = true
+		case "DARK":
+			thePage.Dark = true
+		case "LIGHT":
+			thePage.Light = true
+		default:
+			thePage.Light = true
 		}
 	}
 	thePage.Dev = dev
 }
 
 type PageInfo struct {
-	Dev bool
-	Name string
-	Dark bool
+	Dev   bool
+	Name  string
+	Dark  bool
 	Light bool
 }
 
@@ -248,12 +247,11 @@ type Router struct {
 }
 
 func (r *Router) Middle(path string, f func(http.ResponseWriter,
-*http.Request)) *mux.Route {
+	*http.Request)) *mux.Route {
 	return r.TheRouter.NewRoute().Path(path).HandlerFunc(process(f))
 }
 
-
-func processCmdLineFlags() {
+func init() {
 	// Define command line flags
 	logLevel := flag.String("loglevel", "info", "Set the default loglevel (default:info) [debug|info|warn|error]")
 	version := flag.Bool("v", false, "read the version of the go-machine-service")
@@ -293,7 +291,7 @@ func processCmdLineFlags() {
 		}).Info("Setting log level")
 		logrus.SetLevel(parsedLogLevel)
 		if logrus.GetLevel() == logrus.DebugLevel {
-			go func (){
+			go func() {
 				for {
 					s1 = InitTemplates()
 					time.Sleep(time.Second)
