@@ -17,11 +17,12 @@ trap unStash EXIT
 git stash
 
 
-git checkout origin/depoloyed
+git checkout origin/deployed
 PRE_GITCOMMIT=`git rev-parse --short HEAD`
 
 git fetch --all
-git checkout origin/depolyed
+git pull
+git checkout origin/deployed
 GITCOMMIT=`git rev-parse --short HEAD`
 
 deploy_container() {
