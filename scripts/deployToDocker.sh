@@ -21,7 +21,6 @@ git checkout origin/deployed
 PRE_GITCOMMIT=`git rev-parse --short HEAD`
 
 git fetch --all
-git pull
 git checkout origin/deployed
 GITCOMMIT=`git rev-parse --short HEAD`
 
