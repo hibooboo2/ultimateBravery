@@ -30,4 +30,4 @@ deploy_container() {
     docker run --restart=always -d -p 9000:8000 -e RIOT_API_KEY=${RIOT_API_KEY} --name=ultimateBravery ultimate-bravery > /dev/null
     echo Deployed to docker.
 }
-[[ ${PRE_GITCOMMIT} != ${GITCOMMIT} ]] && deploy_container
+deploy_container
