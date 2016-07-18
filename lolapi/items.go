@@ -27,7 +27,7 @@ type Item struct {
 	Description          string
 	Plaintext            string
 	Gold                 Gold
-	Id                   int
+	ID                   int
 	From                 []string
 	FromItems            []*Item
 	Into                 []string
@@ -56,7 +56,7 @@ func (theItem *Item) CanUpgrade() bool {
 }
 
 func (theItem *Item) CanUseOnMap(theMap *Map) bool {
-	canUse := theItem.Maps[strconv.Itoa(theMap.MapId)]
+	canUse := theItem.Maps[strconv.Itoa(theMap.MapID)]
 	return canUse
 }
 
@@ -80,16 +80,16 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 		return false
 	}
 	for _, otherItem := range otherItems {
-		if otherItem.Id == theItem.Id {
+		if otherItem.ID == theItem.ID {
 			return false
 		}
 	}
 	if theItem.Group != "" {
 		totalCanHave := 0
 		for _, group := range theItemData.Groups {
-			if theItem.Group == group.Id {
+			if theItem.Group == group.ID {
 				if group.MaxGroupOwnable != "-1" && group.MaxGroupOwnable != "" {
-					totalCanHave = idStringToId(group.MaxGroupOwnable)
+					totalCanHave = idStringToID(group.MaxGroupOwnable)
 				}
 			}
 		}
@@ -143,9 +143,9 @@ func (theItem *Item) Init() *Item {
 
 	theItem.FromItems = []*Item{}
 	for _, val := range theItem.From {
-		id := idStringToId(val)
-		gotItem := GetItemById(id)
-		if gotItem.Id == DEFAULT_ITEM {
+		id := idStringToID(val)
+		gotItem := GetItemByID(id)
+		if gotItem.ID == DEFAULT_ITEM {
 			temp, err := GetItemFromRiot(val)
 			if err != nil {
 				logrus.Error(err.Error())
@@ -163,9 +163,9 @@ func (theItem *Item) Init() *Item {
 	}
 	theItem.IntoItems = []*Item{}
 	for _, val := range theItem.Into {
-		id := idStringToId(val)
-		gotItem := GetItemById(id)
-		if gotItem.Id == DEFAULT_ITEM {
+		id := idStringToID(val)
+		gotItem := GetItemByID(id)
+		if gotItem.ID == DEFAULT_ITEM {
 			temp, err := GetItemFromRiot(val)
 			if err != nil {
 				logrus.Error(err.Error())
@@ -195,7 +195,7 @@ func (theItem *Item) partialInit() *Item {
 		return nil
 	}
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
-	theItem.PermLink = fmt.Sprintf("/items/%v", theItem.Id)
+	theItem.PermLink = fmt.Sprintf("/items/%v", theItem.ID)
 	return theItem
 }
 
@@ -235,21 +235,21 @@ func checkItems(theItem *Item, idStrings []string, items []*Item) error {
 		for _, idString := range idStrings {
 			matched := false
 			hasItem := false
-			_, exists := idsToIgnore[idStringToId(idString)]
+			_, exists := idsToIgnore[idStringToID(idString)]
 			if exists {
 				break
 			}
 			for _, item := range items {
 				if item != nil {
 					hasItem = true
-					if strconv.Itoa(item.Id) == idString {
+					if strconv.Itoa(item.ID) == idString {
 						matched = true
 						break
 					}
 				}
 			}
 			if hasItem && !matched {
-				return fmt.Errorf("Id for items don't match. ITEM: %v %v \n\n %#v", theItem.Name, theItem.Id, items)
+				return fmt.Errorf("ID for items don't match. ITEM: %v %v \n\n %#v", theItem.Name, theItem.ID, items)
 			}
 		}
 	}
@@ -269,17 +269,17 @@ func init() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &item)
-		//itemGot := GetItemFromRiot(strconv.Itoa(item.Id))
+		//itemGot := GetItemFromRiot(strconv.Itoa(item.ID))
 		//itemGot.partialInit()
 		//item = *itemGot
 		AllItems = append(AllItems, &item)
-		allItemsMap[item.Id] = &item
+		allItemsMap[item.ID] = &item
 	}
 	for _, item := range AllItems {
 		item.Init()
 		err := item.Verify()
 		if err == nil {
-			allItemsMap[item.Id] = item
+			allItemsMap[item.ID] = item
 		} else {
 			panic(err)
 		}
@@ -330,28 +330,28 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 	return items
 }
 
-func GetItemById(id int) *Item {
+func GetItemByID(id int) *Item {
 	item, keyExists := allItemsMap[id]
 	if keyExists {
 		return item.partialInit()
 	}
 	return &Item{
 		Name:                 "Not Found",
-		Id:                   id,
+		ID:                   id,
 		SanitizedDescription: "Riots Api never returned this item.",
 	}
 }
 
 const DEFAULT_ITEM = 99999
 
-func GetItemByIdString(idString string) *Item {
-	return GetItemById(idStringToId(idString))
+func GetItemByIDString(idString string) *Item {
+	return GetItemByID(idStringToID(idString))
 }
 
 func GetItemFromRiot(idString string) (*Item, error) {
 	gotItem, err := getResource(fmt.Sprintf(ITEMS_BY_ID, idString), false)
 	if gotItem == nil {
-		id := idStringToId(idString)
+		id := idStringToID(idString)
 		idsToIgnore[id] = id
 		return nil, err
 	}
@@ -388,7 +388,7 @@ func FullItemsSR() []*Item {
 func MapItems(theMap *Map) []*Item {
 	filteredItems := []*Item{}
 	for _, val := range AllItems {
-		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[strconv.Itoa(theMap.MapId)] {
+		if val.CantUpgrade() && val.IsAnUpgrade() && val.Maps[strconv.Itoa(theMap.MapID)] {
 			filteredItems = append(filteredItems, val)
 		}
 	}

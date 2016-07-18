@@ -6,11 +6,13 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
+// Group ...
 type Group struct {
-	Id              string
+	ID              string
 	MaxGroupOwnable string
 }
 
+// ItemData ...
 type ItemData struct {
 	Type    string
 	Version string

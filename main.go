@@ -20,7 +20,7 @@ import (
 
 var s1 = InitTemplates()
 var totalBuilds = 0
-var GITCOMMIT = "HEAD"
+var gitCommit = "HEAD"
 
 func main() {
 	mux := mux.NewRouter().StrictSlash(true)
@@ -35,12 +35,12 @@ func main() {
 	myMux.TheRouter.PathPrefix("/static/").Handler(staticFiles).Name("static")
 	myMux.TheRouter.Handle("/favicon.ico", staticFiles)
 	myMux.Middle("/items", allItems).Name("items")
-	myMux.Middle("/items/{id:[0-9]+}", itemById).Name("itemById")
+	myMux.Middle("/items/{id:[0-9]+}", itemByID).Name("itemByID")
 	myMux.Middle("/champions", allChamps).Name("Champs")
-	myMux.Middle("/champions/{id:[0-9]+}", champById).Name("ChampById")
+	myMux.Middle("/champions/{id:[0-9]+}", champByID).Name("ChampByID")
 	myMux.TheRouter.HandleFunc("/json/build", json).Name("Json")
 	http.Handle("/", mux)
-	err := http.ListenAndServe(":8000", nil)
+	err := http.ListenAndServe(":9000", nil)
 	if err != nil {
 		println(err.Error())
 	}
@@ -74,20 +74,27 @@ func kill(w http.ResponseWriter, r *http.Request) {
 	logrus.Fatalf("Closing total Request since start: %#v", totalBuilds)
 }
 
-func itemById(w http.ResponseWriter, r *http.Request) {
+func itemByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	item := lolapi.GetItemByIdString(vars["id"])
+	item := lolapi.GetItemByIDString(vars["id"])
 	item.Init()
-	s1.ExecuteTemplate(w, "itemById", item)
+	s1.ExecuteTemplate(w, "itemByID", item)
 }
 
+// @Title getChamps
+// @Description Gets all of the champions.
+// @Accept  json
+// @Success 200 {array}  lolapi.Champion
+// @Failure 404 {object} error    "Champs not found"
+// @Resource /champs
+// @Router /champs/ [get]
 func allChamps(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "champs", lolapi.AllChampions)
 }
 
-func champById(w http.ResponseWriter, r *http.Request) {
+func champByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	champ := lolapi.GetChampionByIdString(vars["id"])
+	champ := lolapi.GetChampionByIDString(vars["id"])
 	champ.Init()
 	s1.ExecuteTemplate(w, "champion", champ)
 }
@@ -116,6 +123,7 @@ func json(w http.ResponseWriter, r *http.Request) {
 	s1.ExecuteTemplate(w, "raw", lolapi.Pretty(build))
 }
 
+// InitTemplates ...
 func InitTemplates() *template.Template {
 	files, _ := ioutil.ReadDir("./templates")
 	fileNames := []string{}
@@ -130,17 +138,16 @@ func InitTemplates() *template.Template {
 	return s1
 }
 
-type RequestJson struct {
-	Method string
-	URL    *url.URL
-	Proto  string
-	Host   string
-	Vars   map[string]string
-}
-
 func notFound(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	requestProxy := &RequestJson{
+	type requestJSON struct {
+		Method string
+		URL    *url.URL
+		Proto  string
+		Host   string
+		Vars   map[string]string
+	}
+	requestProxy := &requestJSON{
 		Method: r.Method,
 		URL:    r.URL,
 		Proto:  r.Proto,
@@ -233,6 +240,7 @@ func handleCookies(w http.ResponseWriter, r *http.Request, thePage *PageInfo) {
 	thePage.Dev = dev
 }
 
+// PageInfo ...
 type PageInfo struct {
 	Dev   bool
 	Name  string
@@ -240,10 +248,12 @@ type PageInfo struct {
 	Light bool
 }
 
+// Router ...
 type Router struct {
 	TheRouter *mux.Router
 }
 
+// Middle ...
 func (r *Router) Middle(path string, f func(http.ResponseWriter,
 	*http.Request)) *mux.Route {
 	return r.TheRouter.NewRoute().Path(path).HandlerFunc(process(f))
@@ -278,7 +288,7 @@ func init() {
 	}
 
 	if *version {
-		fmt.Printf("go-machine-service\t gitcommit=%s\n", GITCOMMIT)
+		fmt.Printf("go-machine-service\t gitcommit=%s\n", gitCommit)
 		os.Exit(0)
 	}
 
@@ -296,6 +306,18 @@ func init() {
 				}
 			}()
 		}
-		logrus.Infof("go-machine-service\t gitcommit=%s\n", GITCOMMIT)
+		logrus.Infof("go-machine-service\t gitcommit=%s\n", gitCommit)
 	}
 }
+
+// @APIVersion 1.0.0
+// @APITitle UltimateBravery
+// @APIDescription Make random builds for league of legends
+// @Contact wizardofmath@gmail.com
+// @TermsOfServiceUrl email me.
+// @License MIT
+// @LicenseUrl https://opensource.org/licenses/MIT
+// @BasePath http://localhost:8080/hibooboo2/ultimateBravery/
+
+// @SubApi Champ Viewing API [/champs]
+// @SubApi Item Viewing API [/items]

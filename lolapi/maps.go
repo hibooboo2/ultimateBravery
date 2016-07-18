@@ -7,7 +7,7 @@ import (
 )
 
 type Map struct {
-	MapId   int
+	MapID   int
 	Image   Image
 	MapName string
 }
@@ -30,9 +30,9 @@ func init() {
 			panic(err)
 		}
 		json.Unmarshal(jsonItem, &aMap)
-		if aMap.MapId == 11 { // || aMap.MapId == 12 || aMap.MapId == 8 {
+		if aMap.MapID == 11 { // || aMap.MapID == 12 || aMap.MapID == 8 {
 			AllMaps = append(AllMaps, &aMap)
-			allMapsMap[aMap.MapId] = &aMap
+			allMapsMap[aMap.MapID] = &aMap
 		}
 	}
 	for _, val := range AllMaps {

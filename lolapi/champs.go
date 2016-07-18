@@ -12,7 +12,7 @@ var allChampsMap = make(map[int]*Champion)
 var shuffle = []*Champion{}
 
 type Skin struct {
-	Id   int
+	ID   int
 	Name string
 	Num  int
 }
@@ -34,16 +34,16 @@ func (champ *Champion) CanUseItem(theItem *Item) bool {
 
 func (champ *Champion) Init() *Champion {
 	champ.Picture = CHAMPION_PICTURE + champ.Image.Full
-	champ.PermLink = fmt.Sprintf("/champions/%v", champ.Id)
-	for _, spell := range champ.Spells {
-		spell.Image.Init()
-		logrus.Debugf("Pic: %v", spell.Image.Picture)
-	}
+	champ.PermLink = fmt.Sprintf("/champions/%v", champ.ID)
+	// for _, spell := range champ.Spells {
+	// 	spell.Image.Init()
+	// 	logrus.Debugf("Pic: %v", spell.Image.Picture)
+	// }
 	return champ
 }
 
 type Champion struct {
-	Id        int
+	ID        int
 	Key       string
 	Name      string
 	Title     string
@@ -57,15 +57,17 @@ type Champion struct {
 	Partype   string
 	Info      ChampInfo
 	Stats     ChampStats
-	Spells    []*Spell
-	Passive   Passive
-	Picture   string
-	PermLink  string
+	// Spells    []*Spell
+	Passive  Passive
+	Picture  string
+	PermLink string
 }
 
 type Passive struct {
-	Name, Description, SanitizedDescription string
-	Image                                   Image
+	Name                 string
+	Description          string
+	SanitizedDescription string
+	Image                Image
 }
 
 type Spell struct {
@@ -154,7 +156,7 @@ func init() {
 		json.Unmarshal(jsonItem, &champ)
 		champ.Init()
 		AllChampions = append(AllChampions, &champ)
-		allChampsMap[champ.Id] = &champ
+		allChampsMap[champ.ID] = &champ
 	}
 	logrus.Debugf("Total champions: %v", len(AllChampions))
 
@@ -164,12 +166,12 @@ func init() {
 	}
 }
 
-func GetChampionById(id int) *Champion {
+func GetChampionByID(id int) *Champion {
 	champ := allChampsMap[id]
 	champ.Init()
 	return champ
 }
 
-func GetChampionByIdString(id string) *Champion {
-	return GetChampionById(idStringToId(id))
+func GetChampionByIDString(id string) *Champion {
+	return GetChampionByID(idStringToID(id))
 }

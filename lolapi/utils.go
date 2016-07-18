@@ -103,7 +103,7 @@ func Pretty(object interface{}) string {
 	return ""
 }
 
-func idStringToId(idString string) int {
+func idStringToID(idString string) int {
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		panic(idString + err.Error())
