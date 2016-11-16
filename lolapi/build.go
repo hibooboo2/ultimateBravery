@@ -1,8 +1,9 @@
 package lolapi
 
 import (
-	"github.com/Pallinder/go-randomdata"
 	"fmt"
+
+	"github.com/Pallinder/go-randomdata"
 )
 
 type Spell struct {
@@ -16,7 +17,7 @@ type LOLBuild struct {
 	Champion   *Champion
 	Map        *Map
 	SpellToMax *Spell
-	PermLink  string
+	PermLink   string
 }
 
 type LOLBuildLink struct {
@@ -30,7 +31,7 @@ type LOLBuildLink struct {
 }
 
 func (theLink *LOLBuildLink) getBuild() LOLBuild {
-	items := []*Item {}
+	items := []*Item{}
 	for _, value := range theLink.Items {
 		item := GetItemById(value)
 		item.Init()
@@ -40,26 +41,26 @@ func (theLink *LOLBuildLink) getBuild() LOLBuild {
 		Name:     theLink.Name,
 		Items:    items,
 		Champion: GetChampionById(theLink.Champion),
-		Map: allMapsMap[idStringToId(theLink.Map)],
+		Map:      allMapsMap[idStringToId(theLink.Map)],
 	}
 	build.init()
 	return build
 }
 
 func (theLink *LOLBuild) getBuildLink() LOLBuildLink {
-	items := []int {}
+	items := []int{}
 	for _, value := range theLink.Items {
 		items = append(items, value.Id)
 	}
 	return LOLBuildLink{
 		Name:     theLink.Name,
-		Items: items,
+		Items:    items,
 		Champion: theLink.Champion.Id,
-		Map: fmt.Sprint(theLink.Map.MapId),
+		Map:      fmt.Sprint(theLink.Map.MapId),
 	}
 }
 
-func (theBuild *LOLBuild)  getLink() string {
+func (theBuild *LOLBuild) getLink() string {
 	return MakeLink(theBuild.getBuildLink())
 }
 
@@ -73,7 +74,7 @@ func (theBuild *LOLBuild) TotalCost() int {
 
 func (theBuild *LOLBuild) init() {
 	for _, val := range theBuild.Items {
-			val.Init()
+		val.Init()
 	}
 	buildLink := theBuild.getBuildLink()
 	theBuild.PermLink = "/build/" + MakeLink(buildLink)
@@ -85,9 +86,9 @@ func RandomBuild() LOLBuild {
 	champ := RandomChampion()
 	build := LOLBuild{
 		Name:     RandomBuildName(),
-		Items: RandomItemsFromMap(6, theMap, champ),
+		Items:    RandomItemsFromMap(6, theMap, champ),
 		Champion: champ,
-		Map: theMap,
+		Map:      theMap,
 	}
 	build.init()
 	return build
@@ -96,10 +97,9 @@ func RandomBuild() LOLBuild {
 func RandomBraveryBuild(theMap *Map, champ *Champion) LOLBuild {
 	build := LOLBuild{
 		Name:     RandomBuildName(),
-		Items: RandomItemsFromMap(6, theMap, champ),
+		Items:    RandomItemsFromMap(6, theMap, champ),
 		Champion: champ,
-		Map: theMap,
-
+		Map:      theMap,
 	}
 	build.init()
 	return build
@@ -120,5 +120,5 @@ func BuildFromLink(link string) *LOLBuild {
 		build.init()
 		return &build
 	}
-	return &LOLBuild{ Name: "No Build", }
+	return &LOLBuild{Name: "No Build"}
 }

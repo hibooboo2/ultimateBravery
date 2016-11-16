@@ -3,6 +3,7 @@ package lolapi
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/Sirupsen/logrus"
 )
 
@@ -37,13 +38,13 @@ func (champ *Champion) init() *Champion {
 }
 
 type Champion struct {
-	Id    int
-	Key   string
-	Name  string
-	Title string
-	Image Image
-	Skins []Skin
-	Picture string
+	Id       int
+	Key      string
+	Name     string
+	Title    string
+	Image    Image
+	Skins    []Skin
+	Picture  string
 	PermLink string
 }
 
@@ -69,7 +70,7 @@ func initializeChampionsSlice() {
 	logrus.Debugf("Total champions: %v", len(AllChampions))
 }
 
-func GetChampionById(id int) *Champion {
+func GetChampionB	yId(id int) *Champion {
 	champ := allChampsMap[id]
 	champ.init()
 	return champ
