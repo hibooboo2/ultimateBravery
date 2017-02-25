@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+
 	"github.com/Sirupsen/logrus"
 )
 
@@ -35,10 +36,10 @@ type Item struct {
 	Picture              string
 	PermLink             string
 	Maps                 map[string]bool
-	Group               string
-	RequiredChampion    string
-	HideFromAll         bool
-	initialized         bool
+	Group                string
+	RequiredChampion     string
+	HideFromAll          bool
+	initialized          bool
 }
 
 func (theItem *Item) CanUpgrade() bool {
@@ -89,7 +90,7 @@ func (theItem *Item) CanUseInBuild(theMap *Map, otherItems []*Item, champ *Champ
 				}
 			}
 		}
-		if totalCanHave >= 1 && totalInBuild(otherItems, theItem.Group) + 1 > totalCanHave {
+		if totalCanHave >= 1 && totalInBuild(otherItems, theItem.Group)+1 > totalCanHave {
 			return false
 		}
 	}
@@ -133,7 +134,7 @@ func (theItem *Item) Init() *Item {
 		return nil
 	}
 
-	theItem.FromItems = []*Item {}
+	theItem.FromItems = []*Item{}
 	for _, val := range theItem.From {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
@@ -147,7 +148,7 @@ func (theItem *Item) Init() *Item {
 			idsToIgnore[id] = id
 		}
 	}
-	theItem.IntoItems = []*Item {}
+	theItem.IntoItems = []*Item{}
 	for _, val := range theItem.Into {
 		id := idStringToId(val)
 		gotItem := GetItemById(id)
@@ -175,7 +176,7 @@ func (theItem *Item) partialInit() *Item {
 		return nil
 	}
 	theItem.Picture = ITEM_PICTURE + theItem.Image.Full
-	theItem.PermLink = fmt.Sprintf("/items/%v",theItem.Id)
+	theItem.PermLink = fmt.Sprintf("/items/%v", theItem.Id)
 	return theItem
 }
 
@@ -210,7 +211,7 @@ func (theItem *Item) Verify() error {
 	return nil
 }
 
-func checkItems(theItem *Item, idStrings []string, items []*Item) error{
+func checkItems(theItem *Item, idStrings []string, items []*Item) error {
 	if len(idStrings) > 0 {
 		for _, idString := range idStrings {
 			matched := false
@@ -274,7 +275,7 @@ func RandomItem(itemsToUse []*Item) *Item {
 	return itemsToUse[RandomNumber(len(itemsToUse)-1)]
 }
 
-func RandomItemFromMap(theMap *Map, otherItems []*Item, champ * Champion) *Item {
+func RandomItemFromMap(theMap *Map, otherItems []*Item, champ *Champion) *Item {
 
 	item := AllItems[RandomNumber(len(AllItems)-1)]
 	for !item.CanUseInBuild(theMap, otherItems, champ) {
@@ -289,7 +290,7 @@ func RandomItemsFromMap(howMany int, theMap *Map, champ *Champion) []*Item {
 		theMap = RandomMap()
 	}
 	total := 0
-	items := []*Item {}
+	items := []*Item{}
 	for total < 6 {
 		item := RandomItemFromMap(theMap, items, champ)
 		items = append(items, item)
@@ -306,11 +307,12 @@ func GetItemById(id int) *Item {
 	return DEFAULT_ITEM
 }
 
-var DEFAULT_ITEM  = &Item{
-	Name: "404",
+var DEFAULT_ITEM = &Item{
+	Name:     "404",
 	PermLink: "/items/9999",
-	Id: 9999,
+	Id:       9999,
 }
+
 func GetItemByIdString(idString string) *Item {
 	return GetItemById(idStringToId(idString))
 }

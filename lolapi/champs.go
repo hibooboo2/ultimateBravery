@@ -70,7 +70,7 @@ func initializeChampionsSlice() {
 	logrus.Debugf("Total champions: %v", len(AllChampions))
 }
 
-func GetChampionB	yId(id int) *Champion {
+func GetChampionById(id int) *Champion {
 	champ := allChampsMap[id]
 	champ.init()
 	return champ

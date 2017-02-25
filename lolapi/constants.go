@@ -13,6 +13,7 @@ const CHAMPION_PICTURE = `http://ddragon.leagueoflegends.com/cdn/6.2.1/img/champ
 const CHAMPION_LOADING = `http://ddragon.leagueoflegends.com/cdn/img/champion/loading/%v_%v.jpg`
 const CHAMPION_SPLASH = `http://ddragon.leagueoflegends.com/cdn/img/champion/splash/%v_%v.jpg`
 const MAPS = `https://global.api.pvp.net/api/lol/static-data/na/v1.2/map?`
+
 var API_KEY = os.Getenv("RIOT_API_KEY")
 
 const ADD_KEY = "api_key="

@@ -7,8 +7,9 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"time"
 	"strconv"
+	"time"
+
 	"github.com/Sirupsen/logrus"
 )
 
@@ -22,7 +23,7 @@ func getResource(resourceUrl string) interface{} {
 	resourceUrl = resourceUrl + ADD_KEY + API_KEY
 	response, err := http.Get(resourceUrl)
 	if err != nil || response.StatusCode >= 400 {
-		logrus.Errorf("Response from riot: %v \n%v",response.Status ,resourceUrl)
+		logrus.Errorf("Response from riot: %v \n%v", response.Status, resourceUrl)
 		return nil
 	}
 	defer response.Body.Close()
@@ -46,7 +47,7 @@ func RandomNumber(max int) int {
 }
 
 func Init() {
-	defer func (){
+	defer func() {
 		logrus.Debugf("Made %#v requests to riot.", TotalResourceCalls)
 	}()
 	rand.Seed(time.Now().Unix())
@@ -109,7 +110,6 @@ func totalInBuild(items []*Item, group string) int {
 	return total
 }
 
-
-type ReaderWriter struct{
+type ReaderWriter struct {
 	data []byte
 }

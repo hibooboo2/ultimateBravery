@@ -5,16 +5,16 @@ import (
 )
 
 type Group struct {
-	Id string
+	Id              string
 	MaxGroupOwnable string
 }
 
 type ItemData struct {
-	Type string
+	Type    string
 	Version string
-	Basic  map[string]interface{}
-	Data   map[string]Item
-	Groups []Group
+	Basic   map[string]interface{}
+	Data    map[string]Item
+	Groups  []Group
 }
 
 var theItemData ItemData
@@ -38,4 +38,3 @@ func initializeItemsFromDataSlice() {
 	//}
 	//fmt.Printf("%v", theItemData.Groups)
 }
-
